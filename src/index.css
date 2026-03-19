@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system: Warm Tool — minimal, premium, accessible.
+ * - CTA: #d65d0e (orange)   → --primary
+ * - Link/Focus: #458588 (blue) → --accent, --ring
+ * - Semantics only: error, success, warning
+ * - Layered surfaces (card > background)
+ * - Radius: 8px containers, 6px controls
+ * - Transitions: 150ms hover, 200ms focus
+ */
+
+:root {
+  --radius: 0.5rem;
+
+  /* Dark theme (default) — warm dark, not pure black */
+  --background: #1a1a1a;
+  --foreground: #d5d5d5;
+  --card: #232323;
+  --card-foreground: #d5d5d5;
+  --popover: #272727;
+  --popover-foreground: #d5d5d5;
+  --primary: #d65d0e;
+  --primary-foreground: #1a1a1a;
+  --secondary: #2a2a2a;
+  --secondary-foreground: #a0a0a0;
+  --muted: #2a2a2a;
+  --muted-foreground: #707070;
+  --accent: #458588;
+  --accent-foreground: #1a1a1a;
+  --destructive: #cc241d;
+  --destructive-foreground: #fce8c3;
+  --border: #2e2e2e;
+  --input: #2e2e2e;
+  --ring: #458588;
+  --success: #98971a;
+  --warning: #d79921;
+  --error: #cc241d;
+}
+
+[data-theme='light'] {
+  --background: #f8f8f8;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #d65d0e;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #505050;
+  --muted: #f0f0f0;
+  --muted-foreground: #808080;
+  --accent: #458588;
+  --accent-foreground: #ffffff;
+  --border: #e2e2e2;
+  --input: #e2e2e2;
+  --ring: #458588;
+  --destructive: #cc241d;
+  --destructive-foreground: #ffffff;
+  --success: #98971a;
+  --warning: #d79921;
+  --error: #cc241d;
+}
+
+@theme inline {
+  --font-sans: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  #root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* React Flow — warm, layered */
+.react-flow__background {
+  background-color: var(--background) !important;
+}
+
+.react-flow__minimap {
+  background-color: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  opacity: 0.95;
+}
+
+.react-flow__controls {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  overflow: hidden;
+}
+
+.react-flow__controls button {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+  transition: background-color 0.15s, color 0.15s !important;
+}
+
+.react-flow__controls button:hover {
+  background-color: var(--secondary) !important;
+  color: var(--primary) !important;
+}
+
+.react-flow__edge-path {
+  stroke: var(--muted-foreground) !important;
+  stroke-width: 1.5;
+  transition: stroke 0.15s !important;
+}
+
+.react-flow__handle {
+  background-color: var(--primary) !important;
+  border: 2px solid var(--background) !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  transition: transform 0.15s !important;
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.3) !important;
+}
+
+.react-flow__node.selected .react-flow__edge-path {
+  stroke: var(--primary) !important;
+}

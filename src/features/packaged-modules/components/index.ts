@@ -1,0 +1,1 @@
+export { PackagedModuleCard } from './PackagedModuleCard';

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagrammer Farm — Design. Automate. Deploy.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ================================================================
+       DIAGRAMMER FARM — Landing Page
+       Aesthetic: Warm Tool meets Editorial.
+       Palette: #d65d0e (orange CTA), #458588 (blue accent), warm darks.
+       ================================================================ */
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --orange: #d65d0e;
+      --orange-light: #e8843a;
+      --orange-glow: rgba(214, 93, 14, 0.15);
+      --blue: #458588;
+      --blue-light: #689d6a;
+      --bg: #111111;
+      --bg-card: #1a1a1a;
+      --bg-elevated: #222222;
+      --fg: #d5d5d5;
+      --fg-muted: #808080;
+      --fg-dim: #555555;
+      --border: #2a2a2a;
+      --success: #98971a;
+      --warning: #d79921;
+      --error: #cc241d;
+      --font-mono: "Space Mono", monospace;
+      --font-sans: "Inter", -apple-system, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- Grain overlay ---- */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 180px;
+    }
+
+    /* ---- Selection ---- */
+    ::selection {
+      background: var(--orange);
+      color: var(--bg);
+    }
+
+    /* ---- Utility ---- */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .mono { font-family: var(--font-mono); }
+    .orange { color: var(--orange); }
+    .blue { color: var(--blue); }
+    .muted { color: var(--fg-muted); }
+    .dim { color: var(--fg-dim); }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover { color: var(--orange-light); }
+
+    /* ================================================================
+       NAV
+       ================================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(17, 17, 17, 0.8);
+      backdrop-filter: blur(20px) saturate(1.2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-brand-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--orange);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--bg);
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .nav-brand span {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--fg-muted);
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--fg); }
+
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 8px 20px;
+      background: var(--orange);
+      color: var(--bg);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .nav-cta:hover {
+      background: var(--orange-light);
+      color: var(--bg);
+      transform: translateY(-1px);
+    }
+
+    /* ================================================================
+       HERO
+       ================================================================ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      overflow: hidden;
+    }
+
+    /* Animated grid background */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+      opacity: 0.4;
+    }
+
+    /* Floating orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .hero-orb--orange {
+      width: 400px;
+      height: 400px;
+      background: var(--orange-glow);
+      top: 10%;
+      right: 10%;
+      animation-delay: 0s;
+    }
+
+    .hero-orb--blue {
+      width: 300px;
+      height: 300px;
+      background: rgba(69, 133, 136, 0.08);
+      bottom: 15%;
+      left: 5%;
+      animation-delay: -4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(20px, -30px); }
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 520px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: var(--orange-glow);
+      border: 1px solid rgba(214, 93, 14, 0.2);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--orange);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: var(--font-sans);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .line-break { display: block; }
+
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 50%, var(--warning) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 17px;
+      color: var(--fg-muted);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 440px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 14px 32px;
+      background: var(--orange);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      background: var(--orange-light);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 400;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      border-color: var(--fg-muted);
+      color: var(--fg);
+      transform: translateY(-2px);
+    }
+
+    /* Hero visual — fake app window */
+    .hero-visual {
+      position: relative;
+    }
+
+    .app-window {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .app-window-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .app-window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--fg-dim);
+    }
+    .app-window-dot:nth-child(1) { background: var(--error); }
+    .app-window-dot:nth-child(2) { background: var(--warning); }
+    .app-window-dot:nth-child(3) { background: var(--success); }
+
+    .app-window-body {
+      padding: 24px;
+      min-height: 340px;
+      position: relative;
+      background:
+        radial-gradient(circle at 30% 50%, rgba(214, 93, 14, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 40%, rgba(69, 133, 136, 0.03) 0%, transparent 50%);
+    }
+
+    /* Fake diagram nodes */
+    .fake-node {
+      position: absolute;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      animation: fade-up 0.8s ease-out both;
+    }
+
+    .fake-node-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .fake-node-text strong {
+      display: block;
+      font-size: 11px;
+      color: var(--fg);
+    }
+    .fake-node-text span {
+      font-size: 10px;
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+    }
+
+    .fake-node:nth-child(1) {
+      top: 30px; left: 20px;
+      border-left-color: #FF9900;
+      animation-delay: 0.2s;
+    }
+    .fake-node:nth-child(1) .fake-node-icon {
+      background: rgba(255, 153, 0, 0.12);
+      color: #FF9900;
+    }
+
+    .fake-node:nth-child(2) {
+      top: 30px; right: 20px;
+      border-left-color: var(--blue);
+      animation-delay: 0.4s;
+    }
+    .fake-node:nth-child(2) .fake-node-icon {
+      background: rgba(69, 133, 136, 0.12);
+      color: var(--blue);
+    }
+
+    .fake-node:nth-child(3) {
+      top: 130px; left: 50%;
+      transform: translateX(-50%);
+      border-left-color: var(--orange);
+      animation-delay: 0.6s;
+    }
+    .fake-node:nth-child(3) .fake-node-icon {
+      background: var(--orange-glow);
+      color: var(--orange);
+    }
+
+    .fake-node:nth-child(4) {
+      bottom: 40px; left: 30px;
+      border-left-color: var(--success);
+      animation-delay: 0.8s;
+    }
+    .fake-node:nth-child(4) .fake-node-icon {
+      background: rgba(152, 151, 26, 0.12);
+      color: var(--success);
+    }
+
+    .fake-node:nth-child(5) {
+      bottom: 40px; right: 30px;
+      border-left-color: #8E24AA;
+      animation-delay: 1s;
+    }
+    .fake-node:nth-child(5) .fake-node-icon {
+      background: rgba(142, 36, 170, 0.12);
+      color: #8E24AA;
+    }
+
+    /* Connecting lines via SVG */
+    .fake-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .fake-lines line {
+      stroke: var(--fg-dim);
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+      opacity: 0;
+      animation: line-draw 0.6s ease-out forwards;
+    }
+    .fake-lines line:nth-child(1) { animation-delay: 1.2s; }
+    .fake-lines line:nth-child(2) { animation-delay: 1.4s; }
+    .fake-lines line:nth-child(3) { animation-delay: 1.6s; }
+    .fake-lines line:nth-child(4) { animation-delay: 1.8s; }
+
+    @keyframes line-draw { to { opacity: 0.4; } }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ================================================================
+       STATS STRIP
+       ================================================================ */
+    .stats {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 0;
+    }
+
+    .stats .container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--fg-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* ================================================================
+       FEATURES
+       ================================================================ */
+    .features {
+      padding: 100px 0;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 16px;
+      color: var(--fg-muted);
+      max-width: 560px;
+      margin-bottom: 56px;
+      line-height: 1.7;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--fg-dim);
+      transform: translateY(-4px);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+      background: var(--orange-glow);
+      color: var(--orange);
+      border: 1px solid rgba(214, 93, 14, 0.15);
+    }
+
+    .feature-card:nth-child(even) .feature-icon {
+      background: rgba(69, 133, 136, 0.1);
+      color: var(--blue);
+      border-color: rgba(69, 133, 136, 0.15);
+    }
+
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--fg-muted);
+      line-height: 1.7;
+    }
+
+    /* ================================================================
+       HOW IT WORKS — Three steps
+       ================================================================ */
+    .how-it-works {
+      padding: 100px 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      margin-top: 56px;
+      position: relative;
+    }
+
+    /* Connecting line between steps */
+    .steps::before {
+      content: "";
+      position: absolute;
+      top: 36px;
+      left: calc(16.66% + 24px);
+      right: calc(16.66% + 24px);
+      height: 1px;
+      background: repeating-linear-gradient(90deg, var(--fg-dim) 0, var(--fg-dim) 6px, transparent 6px, transparent 12px);
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step-number {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--orange);
+      position: relative;
+      z-index: 2;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .step:hover .step-number {
+      border-color: var(--orange);
+      background: var(--orange-glow);
+    }
+
+    .step h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: var(--fg-muted);
+      line-height: 1.7;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* ================================================================
+       CODE PREVIEW
+       ================================================================ */
+    .code-section {
+      padding: 100px 0;
+    }
+
+    .code-section .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-block-tab {
+      font-size: 11px;
+      color: var(--fg-dim);
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .code-block-tab.active {
+      background: var(--orange-glow);
+      color: var(--orange);
+    }
+
+    .code-block-body {
+      padding: 20px;
+      overflow-x: auto;
+      max-height: 380px;
+    }
+
+    .code-block-body .line {
+      display: flex;
+      gap: 16px;
+    }
+
+    .code-block-body .line-num {
+      color: var(--fg-dim);
+      user-select: none;
+      min-width: 24px;
+      text-align: right;
+    }
+
+    .code-block-body .kw { color: var(--orange); }
+    .code-block-body .str { color: var(--success); }
+    .code-block-body .fn { color: var(--blue); }
+    .code-block-body .cm { color: var(--fg-dim); }
+    .code-block-body .vr { color: var(--warning); }
+
+    /* ================================================================
+       PROVIDERS
+       ================================================================ */
+    .providers {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .providers-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+    }
+
+    .provider-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.2s;
+    }
+
+    .provider-item:hover { transform: translateY(-4px); }
+
+    .provider-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      transition: border-color 0.2s;
+    }
+
+    .provider-item:hover .provider-logo {
+      border-color: var(--fg-dim);
+    }
+
+    .provider-logo.aws { color: #FF9900; }
+    .provider-logo.azure { color: #0078D4; }
+    .provider-logo.gcp { color: #4285F4; }
+    .provider-logo.generic { color: var(--fg-muted); }
+
+    .provider-name {
+      font-size: 12px;
+      color: var(--fg-muted);
+      font-weight: 500;
+    }
+
+    .provider-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--fg-dim);
+    }
+
+    /* ================================================================
+       CTA FINAL
+       ================================================================ */
+    .cta-section {
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 50% 50% at 50% 50%, var(--orange-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-title {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .cta-subtitle {
+      font-size: 17px;
+      color: var(--fg-muted);
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+
+    footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    footer p {
+      font-size: 12px;
+      color: var(--fg-dim);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--fg-dim);
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 900px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .hero-content { max-width: 100%; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 32px; }
+      .steps::before { display: none; }
+      .code-section .container { grid-template-columns: 1fr; }
+      .stats .container { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-secondary { justify-content: center; }
+      .stats .container { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .providers-row { gap: 24px; }
+      .cta-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav>
+    <div class="container">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">A</div>
+        <span>DIAGRAMMER FARM</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#code">Code Gen</a></li>
+        <li><a href="#providers">Providers</a></li>
+      </ul>
+      <a href="#" class="nav-cta">Open App &rarr;</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-orb hero-orb--orange"></div>
+    <div class="hero-orb hero-orb--blue"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">Open Source &middot; Free</div>
+        <h1>
+          <span class="line-break">From diagram</span>
+          <span class="line-break">to <span class="gradient-text">production IaC</span></span>
+          <span class="line-break">in minutes.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Draw your cloud architecture on canvas. Get a production-ready Terragrunt project with modules, dependencies, CI/CD pipelines&hairsp;—&hairsp;ready to <code class="mono orange">terraform apply</code>.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn-primary">
+            Start Designing
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#how-it-works" class="btn-secondary">
+            See how it works
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="app-window">
+          <div class="app-window-bar">
+            <div class="app-window-dot"></div>
+            <div class="app-window-dot"></div>
+            <div class="app-window-dot"></div>
+          </div>
+          <div class="app-window-body">
+            <svg class="fake-lines" viewBox="0 0 500 340">
+              <line x1="140" y1="55" x2="250" y2="155" />
+              <line x1="380" y1="55" x2="250" y2="155" />
+              <line x1="250" y1="180" x2="120" y2="270" />
+              <line x1="250" y1="180" x2="380" y2="270" />
+            </svg>
+
+            <div class="fake-node">
+              <div class="fake-node-icon">&#955;</div>
+              <div class="fake-node-text">
+                <strong>API Gateway</strong>
+                <span>aws_api_gateway</span>
+              </div>
+            </div>
+
+            <div class="fake-node">
+              <div class="fake-node-icon">&#9878;</div>
+              <div class="fake-node-text">
+                <strong>Cognito</strong>
+                <span>aws_cognito</span>
+              </div>
+            </div>
+
+            <div class="fake-node">
+              <div class="fake-node-icon">&#955;</div>
+              <div class="fake-node-text">
+                <strong>Lambda</strong>
+                <span>aws_lambda</span>
+              </div>
+            </div>
+
+            <div class="fake-node">
+              <div class="fake-node-icon">&#8942;</div>
+              <div class="fake-node-text">
+                <strong>DynamoDB</strong>
+                <span>aws_dynamodb</span>
+              </div>
+            </div>
+
+            <div class="fake-node">
+              <div class="fake-node-icon">S3</div>
+              <div class="fake-node-text">
+                <strong>S3 Bucket</strong>
+                <span>aws_s3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section class="stats">
+    <div class="container">
+      <div>
+        <div class="stat-number">53</div>
+        <div class="stat-label">Cloud services supported</div>
+      </div>
+      <div>
+        <div class="stat-number">19</div>
+        <div class="stat-label">Terraform modules ready</div>
+      </div>
+      <div>
+        <div class="stat-number">6</div>
+        <div class="stat-label">Validation checks built-in</div>
+      </div>
+      <div>
+        <div class="stat-number">0</div>
+        <div class="stat-label">Lines of HCL to write</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need to ship infrastructure.</h2>
+      <p class="section-subtitle">
+        Visual-first workflow. Schema-driven forms. Real-time code generation. All in the browser.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#9998;</div>
+          <h3>Drag &amp; Drop Canvas</h3>
+          <p>Infinite, zoomable canvas. Drag cloud services from the library, connect them, group them into logical units that map to Terragrunt folders.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&lt;/&gt;</div>
+          <h3>Real-time HCL Generation</h3>
+          <p>Every change on the canvas triggers instant code regeneration. Preview main.tf, variables.tf, outputs.tf, and terragrunt.hcl files live.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#9881;</div>
+          <h3>Schema-Driven Forms</h3>
+          <p>Dynamic property panels with typed inputs, enum dropdowns for instance types and runtimes, and secrets management with reveal toggles.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#10003;</div>
+          <h3>Built-in Validation</h3>
+          <p>Catch issues before deploy — circular dependencies, missing required inputs, invalid output mappings. Visual red/yellow rings on problematic nodes.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#8644;</div>
+          <h3>Dependency Engine</h3>
+          <p>Edges auto-generate dependency blocks with proper config paths. Wire source outputs to target inputs through a visual mapping UI.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">&#9776;</div>
+          <h3>Export Everything</h3>
+          <p>Download a production-ready .zip with Terragrunt structure, CI/CD pipelines (GitHub Actions or GitLab), or export as PNG, JPG, JSON.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-label" style="text-align:center">How it works</div>
+      <h2 class="section-title" style="text-align:center">Three steps to production IaC.</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Design</h3>
+          <p>Drag AWS, Azure, or GCP services onto the canvas. Group them into logical modules. Connect them with edges.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Configure</h3>
+          <p>Set instance types, runtimes, secrets, and tags through dynamic forms. The code preview updates in real time.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Deploy</h3>
+          <p>Export a git-ready Terragrunt project with CI/CD pipeline. Push to your repo. <code class="mono orange">terragrunt run-all apply</code>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CODE PREVIEW ===== -->
+  <section class="code-section" id="code">
+    <div class="container">
+      <div>
+        <div class="section-label">Code Generation</div>
+        <h2 class="section-title">Production-grade HCL,<br>without writing a line.</h2>
+        <p class="section-subtitle">
+          Every node and edge on your canvas becomes clean, modular Terraform code. Dependencies are resolved automatically. Remote state is configured. CI/CD is included.
+        </p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:32px;">
+          <span class="hero-badge" style="margin:0; font-size:10px;">main.tf</span>
+          <span class="hero-badge" style="margin:0; font-size:10px;">variables.tf</span>
+          <span class="hero-badge" style="margin:0; font-size:10px;">outputs.tf</span>
+          <span class="hero-badge" style="margin:0; font-size:10px;">terragrunt.hcl</span>
+          <span class="hero-badge" style="margin:0; font-size:10px;">deploy.yml</span>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <div class="code-block-tab active">terragrunt.hcl</div>
+          <div class="code-block-tab">main.tf</div>
+          <div class="code-block-tab">variables.tf</div>
+        </div>
+        <div class="code-block-body">
+          <div class="line"><span class="line-num"> 1</span><span class="kw">include</span> <span class="str">"root"</span> {</div>
+          <div class="line"><span class="line-num"> 2</span>&nbsp; path = <span class="fn">find_in_parent_folders</span>()</div>
+          <div class="line"><span class="line-num"> 3</span>}</div>
+          <div class="line"><span class="line-num"> 4</span></div>
+          <div class="line"><span class="line-num"> 5</span><span class="kw">dependency</span> <span class="str">"cognito"</span> {</div>
+          <div class="line"><span class="line-num"> 6</span>&nbsp; config_path = <span class="str">"../cognito"</span></div>
+          <div class="line"><span class="line-num"> 7</span>}</div>
+          <div class="line"><span class="line-num"> 8</span></div>
+          <div class="line"><span class="line-num"> 9</span><span class="kw">dependency</span> <span class="str">"dynamodb"</span> {</div>
+          <div class="line"><span class="line-num">10</span>&nbsp; config_path = <span class="str">"../dynamodb"</span></div>
+          <div class="line"><span class="line-num">11</span>}</div>
+          <div class="line"><span class="line-num">12</span></div>
+          <div class="line"><span class="line-num">13</span><span class="kw">inputs</span> = {</div>
+          <div class="line"><span class="line-num">14</span>&nbsp; function_name &nbsp;= <span class="str">"api-handler"</span></div>
+          <div class="line"><span class="line-num">15</span>&nbsp; runtime &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="str">"python3.12"</span></div>
+          <div class="line"><span class="line-num">16</span>&nbsp; memory_size &nbsp;&nbsp;= <span class="vr">256</span></div>
+          <div class="line"><span class="line-num">17</span>&nbsp; timeout &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="vr">30</span></div>
+          <div class="line"><span class="line-num">18</span></div>
+          <div class="line"><span class="line-num">19</span>&nbsp; <span class="cm"># Auto-wired from dependency outputs</span></div>
+          <div class="line"><span class="line-num">20</span>&nbsp; user_pool_arn = <span class="fn">dependency</span>.<span class="vr">cognito</span>.outputs.<span class="vr">user_pool_arn</span></div>
+          <div class="line"><span class="line-num">21</span>&nbsp; table_name &nbsp;&nbsp;= <span class="fn">dependency</span>.<span class="vr">dynamodb</span>.outputs.<span class="vr">table_name</span></div>
+          <div class="line"><span class="line-num">22</span>}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROVIDERS ===== -->
+  <section class="providers" id="providers">
+    <div class="container" style="text-align:center">
+      <div class="section-label">Multi-Cloud</div>
+      <h2 class="section-title">All major providers. One canvas.</h2>
+
+      <div class="providers-row">
+        <div class="provider-item">
+          <div class="provider-logo aws">&#9729;</div>
+          <div class="provider-name">AWS</div>
+          <div class="provider-count">19 services</div>
+        </div>
+        <div class="provider-item">
+          <div class="provider-logo azure">&#9674;</div>
+          <div class="provider-name">Azure</div>
+          <div class="provider-count">12 services</div>
+        </div>
+        <div class="provider-item">
+          <div class="provider-logo gcp">&#9650;</div>
+          <div class="provider-name">GCP</div>
+          <div class="provider-count">12 services</div>
+        </div>
+        <div class="provider-item">
+          <div class="provider-logo generic">&#8943;</div>
+          <div class="provider-name">Generic</div>
+          <div class="provider-count">10 shapes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title">
+        Stop writing boilerplate.<br>
+        <span class="gradient-text" style="background:linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 50%, var(--warning) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Start designing infrastructure.</span>
+      </h2>
+      <p class="cta-subtitle">
+        Open source, runs in your browser, no backend needed. Your diagrams never leave your machine.
+      </p>
+      <div class="cta-actions">
+        <a href="#" class="btn-primary">
+          Open Diagrammer Farm
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://github.com" class="btn-secondary" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.3 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <p class="mono">&copy; 2026 Diagrammer Farm</p>
+      <ul class="footer-links">
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Changelog</a></li>
+      </ul>
+    </div>
+  </footer>
+
+</body>
+</html>
