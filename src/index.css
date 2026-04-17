@@ -17,25 +17,25 @@
 :root {
   --radius: 0.5rem;
 
-  /* Dark theme (default) — warm dark, not pure black */
-  --background: #1a1a1a;
-  --foreground: #d5d5d5;
-  --card: #232323;
-  --card-foreground: #d5d5d5;
-  --popover: #272727;
-  --popover-foreground: #d5d5d5;
+  /* Dark theme (default) — warm dark, luminous greys */
+  --background: #222226;
+  --foreground: #ebebeb;
+  --card: #2a2a2f;
+  --card-foreground: #ebebeb;
+  --popover: #2e2e33;
+  --popover-foreground: #ebebeb;
   --primary: #d65d0e;
-  --primary-foreground: #1a1a1a;
-  --secondary: #2a2a2a;
-  --secondary-foreground: #a0a0a0;
-  --muted: #2a2a2a;
-  --muted-foreground: #707070;
+  --primary-foreground: #222226;
+  --secondary: #36363c;
+  --secondary-foreground: #cccccc;
+  --muted: #36363c;
+  --muted-foreground: #9e9e9e;
   --accent: #458588;
-  --accent-foreground: #1a1a1a;
+  --accent-foreground: #222226;
   --destructive: #cc241d;
   --destructive-foreground: #fce8c3;
-  --border: #2e2e2e;
-  --input: #2e2e2e;
+  --border: #454549;
+  --input: #3c3c42;
   --ring: #458588;
   --success: #98971a;
   --warning: #d79921;
