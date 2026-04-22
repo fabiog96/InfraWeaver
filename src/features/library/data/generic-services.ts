@@ -1,14 +1,27 @@
 import type { ServiceDefinition } from '@/shared/types';
 
+const generic = (id: string, label: string, category: string, color = '#3b82f6'): ServiceDefinition => ({
+  id: `generic-${id}`, label, provider: 'generic', serviceType: label, icon: `generic-${id}`, category, defaultColor: color,
+});
+
 export const genericServices: ServiceDefinition[] = [
-    { id: 'generic-server', label: 'Server', provider: 'generic', serviceType: 'Server', icon: 'generic-server', category: 'compute', defaultColor: '#42f49eff' },
-    { id: 'generic-database', label: 'Database', provider: 'generic', serviceType: 'Database', icon: 'generic-database', category: 'database', defaultColor: '#42f49eff' },
-    { id: 'generic-network ', label: 'Network', provider: 'generic', serviceType: 'Network', icon: 'generic-network', category: 'networking', defaultColor: '#42f49eff' },
-    { id: 'generic-storage', label: 'Storage', provider: 'generic', serviceType: 'Storage', icon: 'generic-storage', category: 'storage', defaultColor: '#42f49eff' },
-    { id: 'generic-compute', label: 'Compute', provider: 'generic', serviceType: 'Compute', icon: 'generic-compute', category: 'compute', defaultColor: '#42f49eff' },
-    { id: 'generic-computer', label: 'Computer', provider: 'generic', serviceType: 'Computer', icon: 'generic-computer', category: 'computer', defaultColor: '#42f49eff' },
-    { id: 'generic-users', label: 'Users', provider: 'generic', serviceType: 'Users', icon: 'generic-users', category: 'users', defaultColor: '#42f49eff' },
-    { id: 'generic-react', label: 'React', provider: 'generic', serviceType: 'React', icon: 'generic-react', category: 'react', defaultColor: '#42f49eff' },
-    { id: 'generic-json', label: 'JSON', provider: 'generic', serviceType: 'JSON', icon: 'generic-json', category: 'json', defaultColor: '#42f49eff' },
-    { id: 'generic-note', label: 'Note', provider: 'generic', serviceType: 'Note', icon: 'generic-note', category: 'other', defaultColor: '#facc15' },
+  generic('server', 'Server', 'compute'),
+  generic('database', 'Database', 'database'),
+  generic('network', 'Network', 'networking'),
+  generic('storage', 'Storage', 'storage'),
+  generic('compute', 'Compute', 'compute'),
+  generic('computer', 'Computer', 'compute'),
+  generic('users', 'Users', 'actors'),
+  generic('react', 'React', 'other'),
+  generic('json', 'JSON', 'other'),
+  generic('mobile-app', 'Mobile App', 'clients'),
+  generic('web-app', 'Web App', 'clients'),
+  generic('iot-device', 'IoT Device', 'clients'),
+  generic('external-api', 'External API', 'clients'),
+  generic('developer', 'Developer', 'actors'),
+  generic('admin', 'Admin', 'actors'),
+  generic('internet', 'Internet', 'other'),
+  generic('cloud', 'Cloud', 'other'),
+  generic('text', 'Text', 'other'),
+  generic('note', 'Note', 'other', '#facc15'),
 ];

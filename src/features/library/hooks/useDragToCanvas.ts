@@ -2,7 +2,7 @@ import { useCallback, type DragEvent } from 'react';
 
 import { useReactFlow } from '@xyflow/react';
 
-import type { ServiceDefinition, TechNodeData } from '@/shared/types';
+import type { ServiceDefinition, TechNodeData} from '@/shared/types';
 import { useDiagramStore } from '@/stores';
 import { getModule } from '@/features/codegen/data/module-registry';
 
@@ -32,6 +32,22 @@ export const useDragToCanvas = () => {
 
       nodeIdCounter += 1;
       const id = `${service.id}-${Date.now()}-${nodeIdCounter}`;
+
+      if(service.id === 'generic-text'){
+        addNode({
+        id,
+        type: 'text' as const,
+        position,
+        width:100,
+        height:200,
+        data:{
+          content:'',
+          fontSize:'md',
+          bgColor:service.defaultColor
+        }
+      });
+        return;
+      }
 
       const tfModule = getModule(service.id);
       const defaultInputs: Record<string, unknown> = {};

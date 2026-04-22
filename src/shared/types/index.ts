@@ -1,9 +1,8 @@
 import type { Node, Edge } from '@xyflow/react';
 
-export type CloudProvider = 'aws' | 'azure' | 'gcp' | 'generic';
+export type CloudProvider = 'aws' | 'generic';
 
 export type NodeStatus = 'healthy' | 'warning' | 'error' | 'none';
-
 export interface TechNodeData extends Record<string, unknown> {
   label: string;
   provider: CloudProvider;
@@ -23,10 +22,16 @@ export interface GroupNodeData extends Record<string, unknown> {
   folderName: string;
   description?: string;
 }
+export interface TextNodeData extends Record<string,unknown>{
+  content: string;
+  fontSize: 'sm' | 'md'| 'lg';
+  bgColor:string;
+}
 
+export type TextNode = Node<TextNodeData, 'text'>;                                                                                                                                                                                                 
 export type TechNode = Node<TechNodeData, 'tech'>;
 export type GroupNode = Node<GroupNodeData, 'group'>;
-export type DiagramNode = TechNode | GroupNode;
+export type DiagramNode = TechNode | GroupNode | TextNode;
 
 export type LineStyle = 'solid' | 'dashed' | 'dotted';
 

@@ -5,70 +5,107 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system: Warm Tool — minimal, premium, accessible.
- * - CTA: #d65d0e (orange)   → --primary
- * - Link/Focus: #458588 (blue) → --accent, --ring
- * - Semantics only: error, success, warning
- * - Layered surfaces (card > background)
+ * Design system: Warm Tool — OKLCH tokens, minimal, premium, accessible.
+ * - Surfaces: paper → paper-2 → paper-3
+ * - Text: ink → ink-2 → ink-3 → ink-4
+ * - Borders: rule, rule-strong
+ * - CTA/Brand: accent (orange)
+ * - Link/Focus: teal
+ * - Semantics: ok, warn, err
  * - Radius: 8px containers, 6px controls
  * - Transitions: 150ms hover, 200ms focus
  */
 
+/* ── OKLCH Design Tokens ─────────────────────────────── */
+
+:root {
+  /* Light (default) */
+  --paper:        oklch(0.965 0.012 80);
+  --paper-2:      oklch(0.945 0.014 80);
+  --paper-3:      oklch(0.92  0.016 80);
+  --ink:          oklch(0.22  0.012 60);
+  --ink-2:        oklch(0.36  0.012 60);
+  --ink-3:        oklch(0.55  0.014 60);
+  --ink-4:        oklch(0.72  0.012 70);
+  --rule:         oklch(0.87  0.014 70);
+  --rule-strong:  oklch(0.78  0.016 65);
+  --accent:       oklch(0.62  0.17  50);
+  --accent-ink:   oklch(0.32  0.14  50);
+  --accent-wash:  oklch(0.92  0.05  60);
+  --teal:         oklch(0.58  0.08  210);
+  --teal-wash:    oklch(0.92  0.03  200);
+  --ok:           oklch(0.60  0.11  135);
+  --warn:         oklch(0.72  0.13  80);
+  --err:          oklch(0.55  0.18  28);
+}
+
+[data-theme="dark"] {
+  --paper:        oklch(0.18  0.012 70);
+  --paper-2:      oklch(0.22  0.012 70);
+  --paper-3:      oklch(0.26  0.014 70);
+  --ink:          oklch(0.93  0.010 80);
+  --ink-2:        oklch(0.80  0.010 80);
+  --ink-3:        oklch(0.64  0.012 80);
+  --ink-4:        oklch(0.48  0.010 70);
+  --rule:         oklch(0.32  0.014 70);
+  --rule-strong:  oklch(0.42  0.014 70);
+  --accent-wash:  oklch(0.32  0.07  55);
+  --teal-wash:    oklch(0.30  0.04  210);
+  /* accent, accent-ink, teal, ok, warn, err → inherited from :root */
+}
+
+/* ── Bridge: OKLCH tokens → Tailwind semantic aliases ── */
+
 :root {
   --radius: 0.5rem;
 
-  /* Dark theme (default) — warm dark, not pure black */
-  --background: #1a1a1a;
-  --foreground: #d5d5d5;
-  --card: #232323;
-  --card-foreground: #d5d5d5;
-  --popover: #272727;
-  --popover-foreground: #d5d5d5;
-  --primary: #d65d0e;
-  --primary-foreground: #1a1a1a;
-  --secondary: #2a2a2a;
-  --secondary-foreground: #a0a0a0;
-  --muted: #2a2a2a;
-  --muted-foreground: #707070;
-  --accent: #458588;
-  --accent-foreground: #1a1a1a;
-  --destructive: #cc241d;
-  --destructive-foreground: #fce8c3;
-  --border: #2e2e2e;
-  --input: #2e2e2e;
-  --ring: #458588;
-  --success: #98971a;
-  --warning: #d79921;
-  --error: #cc241d;
-}
-
-[data-theme='light'] {
-  --background: #f8f8f8;
-  --foreground: #1a1a1a;
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #d65d0e;
-  --primary-foreground: #ffffff;
-  --secondary: #f0f0f0;
-  --secondary-foreground: #505050;
-  --muted: #f0f0f0;
-  --muted-foreground: #808080;
-  --accent: #458588;
-  --accent-foreground: #ffffff;
-  --border: #e2e2e2;
-  --input: #e2e2e2;
-  --ring: #458588;
-  --destructive: #cc241d;
-  --destructive-foreground: #ffffff;
-  --success: #98971a;
-  --warning: #d79921;
-  --error: #cc241d;
+  --background:             var(--paper);
+  --foreground:             var(--ink);
+  --card:                   var(--paper-2);
+  --card-foreground:        var(--ink);
+  --popover:                var(--paper-3);
+  --popover-foreground:     var(--ink);
+  --primary:                var(--accent);
+  --primary-foreground:     var(--paper);
+  --secondary:              var(--paper-3);
+  --secondary-foreground:   var(--ink-2);
+  --muted:                  var(--paper-3);
+  --muted-foreground:       var(--ink-3);
+  --accent-tw:              var(--teal);
+  --accent-foreground:      var(--paper);
+  --destructive:            var(--err);
+  --destructive-foreground: var(--paper);
+  --border:                 var(--rule);
+  --input:                  var(--rule);
+  --ring:                   var(--teal);
+  --success:                var(--ok);
+  --warning:                var(--warn);
+  --error:                  var(--err);
 }
 
 @theme inline {
   --font-sans: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* OKLCH design tokens — usable as Tailwind utilities (bg-paper, text-ink, etc.) */
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent-brand: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-wash: var(--accent-wash);
+  --color-teal: var(--teal);
+  --color-teal-wash: var(--teal-wash);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-err: var(--err);
+
+  /* Semantic aliases — backwards-compatible with existing Tailwind classes */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -81,7 +118,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
+  --color-accent: var(--accent-tw);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -91,6 +128,7 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);

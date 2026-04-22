@@ -4,6 +4,7 @@ import { Button, ScrollArea } from '@/shared/components/ui';
 import { useDiagramStore, useUIStore } from '@/stores';
 import { NodeForm } from './NodeForm';
 import { EdgeForm } from './EdgeForm';
+import { TextNodeForm } from './TextNodeForm';
 
 export const PropertyPanel = () => {
   const open = useUIStore((s) => s.rightSidebarOpen);
@@ -12,6 +13,8 @@ export const PropertyPanel = () => {
   const selectedEdgeId = useDiagramStore((s) => s.selectedEdgeId);
   const removeNode = useDiagramStore((s) => s.removeNode);
   const removeEdge = useDiagramStore((s) => s.removeEdge);
+  const nodes = useDiagramStore((s)=> s.nodes)
+  const selectNode = nodes.find(node => node.id == selectedNodeId)
 
   if (!open) {
     return (
@@ -59,7 +62,7 @@ export const PropertyPanel = () => {
       </div>
 
       <ScrollArea className="flex-1">
-        {selectedEdgeId ? <EdgeForm /> : <NodeForm />}
+        {selectNode?.type ==='text'? <TextNodeForm /> : selectedEdgeId ? <EdgeForm /> : <NodeForm />}
       </ScrollArea>
     </div>
   );

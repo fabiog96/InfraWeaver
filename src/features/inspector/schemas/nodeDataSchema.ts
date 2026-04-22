@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const nodeDataSchema = z.object({
   label: z.string().min(1, 'Label is required').max(50),
-  provider: z.enum(['aws', 'azure', 'gcp', 'generic']),
+  provider: z.enum(['aws', 'generic']),
   serviceType: z.string().min(1),
   icon: z.string().min(1),
   status: z.enum(['healthy', 'warning', 'error', 'none']),

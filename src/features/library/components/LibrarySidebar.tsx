@@ -10,8 +10,21 @@ import { CategoryAccordion } from './CategoryAccordion';
 import { PackagedModuleCard } from '@/features/packaged-modules/components';
 import { serverlessApiModule } from '@/features/packaged-modules/data/serverless-api';
 import { cloudfrontS3Module } from '@/features/packaged-modules/data/cloudfront-s3';
+import { apiGatewaySqsModule } from '@/features/packaged-modules/data/api-gateway-sqs';
+import { ecsMicroserviceModule } from '@/features/packaged-modules/data/ecs-microservice';
+import { scheduledLambdaModule } from '@/features/packaged-modules/data/scheduled-lambda';
+import { snsConsumerLambdaModule } from '@/features/packaged-modules/data/sns-consumer-lambda';
+import { etlPipelineModule } from '@/features/packaged-modules/data/etl-pipeline';
 
-const packagedModules = [serverlessApiModule, cloudfrontS3Module];
+const packagedModules = [
+  serverlessApiModule,
+  cloudfrontS3Module,
+  apiGatewaySqsModule,
+  ecsMicroserviceModule,
+  scheduledLambdaModule,
+  snsConsumerLambdaModule,
+  etlPipelineModule,
+];
 
 export const LibrarySidebar = () => {
   const open = useUIStore((s) => s.leftSidebarOpen);
