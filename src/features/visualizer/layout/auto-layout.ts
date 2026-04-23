@@ -8,6 +8,22 @@ const NODE_WIDTH = 200;
 const NODE_HEIGHT = 60;
 const GROUP_PADDING = 60;
 
+const FILE_GROUP_PALETTE = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+];
+
+const pickColorFromFilePath = (filePath: string): string => {
+  let hash = 0;
+  for (let i = 0; i < filePath.length; i++) {
+    hash = ((hash << 5) - hash + filePath.charCodeAt(i)) | 0;
+  }
+  return FILE_GROUP_PALETTE[Math.abs(hash) % FILE_GROUP_PALETTE.length];
+};
+
+const extractFileNameWithoutExtension = (filePath: string): string =>
+  filePath.split('/').pop()?.replace(/\.tf$/, '') ?? filePath;
+
 /**
  * Computes a dagre auto-layout for the dependency graph and converts
  * GraphNode/GraphEdge into React Flow Node/Edge elements.
@@ -31,8 +47,8 @@ export const computeLayout = (
   g.setDefaultEdgeLabel(() => ({}));
   g.setGraph({
     rankdir: 'TB',
-    nodesep: 50,
-    ranksep: 80,
+    nodesep: 80,
+    ranksep: 120,
     marginx: 40,
     marginy: 40,
   });
@@ -152,28 +168,41 @@ const inferIconFromType = (node: GraphNode): string => {
  * // groupNodes → [{ id: 'group:campaign-proximity', type: 'vizGroup', ... }]
  * // childUpdates → Map of nodeId → { parentId, position offset within group }
  */
+/**
+ * Groups flow nodes by a shared key (project, layer, or filePath)
+ * and creates parent group nodes sized to wrap their children.
+ */
 export const computeGroupLayout = (
   flowNodes: Node[],
-  groupBy: 'project' | 'layer',
+  groupBy: 'project' | 'layer' | 'filePath',
+  excludeNodeIds?: Set<string>,
 ): { groupNodes: Node[]; childUpdates: Map<string, { parentId: string; position: { x: number; y: number } }> } => {
-  const groups = new Map<string, Node[]>();
+
+  // Bucket each node by its grouping key
+  const nodesByGroup = new Map<string, Node[]>();
 
   for (const node of flowNodes) {
-    const key = groupBy === 'project'
-      ? (node.data?.project as string | undefined)
-      : (node.data?.layer as string | undefined);
+    if (excludeNodeIds?.has(node.id)) continue;
+
+    const key = groupBy === 'filePath'
+      ? (node.data?.filePath as string | undefined)
+      : groupBy === 'project'
+        ? (node.data?.project as string | undefined)
+        : (node.data?.layer as string | undefined);
     if (!key) continue;
-    const existing = groups.get(key) ?? [];
-    existing.push(node);
-    groups.set(key, existing);
+
+    const bucket = nodesByGroup.get(key) ?? [];
+    bucket.push(node);
+    nodesByGroup.set(key, bucket);
   }
 
   const groupNodes: Node[] = [];
   const childUpdates = new Map<string, { parentId: string; position: { x: number; y: number } }>();
 
-  for (const [key, children] of groups.entries()) {
+  for (const [key, children] of nodesByGroup.entries()) {
     if (children.length < 2) continue;
 
+    // Bounding box of all children
     const minX = Math.min(...children.map((n) => n.position.x));
     const minY = Math.min(...children.map((n) => n.position.y));
     const maxX = Math.max(...children.map((n) => n.position.x + NODE_WIDTH));
@@ -183,6 +212,12 @@ export const computeGroupLayout = (
     const groupX = minX - GROUP_PADDING;
     const groupY = minY - GROUP_PADDING;
 
+    // Label and color depend on grouping strategy
+    const label = groupBy === 'filePath' ? extractFileNameWithoutExtension(key) : key;
+    const color = groupBy === 'filePath'
+      ? pickColorFromFilePath(key)
+      : (children[0]?.data?.color as string) ?? '#666666';
+
     groupNodes.push({
       id: groupId,
       type: 'vizGroup',
@@ -191,12 +226,10 @@ export const computeGroupLayout = (
         width: maxX - minX + GROUP_PADDING * 2,
         height: maxY - minY + GROUP_PADDING * 2,
       },
-      data: {
-        label: key,
-        color: children[0]?.data?.color ?? '#666666',
-      },
+      data: { label, color },
     });
 
+    // Convert each child position from absolute to relative-to-group
     for (const child of children) {
       childUpdates.set(child.id, {
         parentId: groupId,
@@ -209,4 +242,32 @@ export const computeGroupLayout = (
   }
 
   return { groupNodes, childUpdates };
+};
+
+/**
+ * Wraps flow nodes into file-based groups.
+ * Ghost nodes (cross-project references) are excluded from grouping.
+ * Returns the final node array with group parents before their children (React Flow requirement).
+ */
+export const groupNodesByFile = (
+  flowNodes: Node[],
+  ghostNodeIds: Set<string>,
+): Node[] => {
+  const { groupNodes, childUpdates } = computeGroupLayout(flowNodes, 'filePath', ghostNodeIds);
+
+  if (groupNodes.length === 0) return flowNodes;
+
+  const nodesWithParent = flowNodes.map((node) => {
+    const update = childUpdates.get(node.id);
+    if (!update) return node;
+    return {
+      ...node,
+      parentId: update.parentId,
+      position: update.position,
+      extent: 'parent' as const,
+    };
+  });
+
+  // React Flow requires parent nodes to appear before their children
+  return [...groupNodes, ...nodesWithParent];
 };

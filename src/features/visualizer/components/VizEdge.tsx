@@ -1,10 +1,10 @@
-import { memo } from 'react';
 import {
-  BaseEdge,
   EdgeLabelRenderer,
-  getSmoothStepPath,
+  getBezierPath,
   type EdgeProps,
 } from '@xyflow/react';
+
+import { useVisualizerStore } from '../stores/visualizerStore';
 
 interface VizEdgeData {
   label?: string;
@@ -12,16 +12,15 @@ interface VizEdgeData {
 }
 
 /**
- * Read-only edge component for the Visualizer canvas (D5).
- * No delete button — edges reflect parsed dependencies, not user-created connections.
+ * Read-only edge for the Visualizer canvas.
  *
- * Edge styles:
- * - explicit (solid): direct resource reference
- * - terragrunt (dashed): cross-layer Terragrunt dependency
- * - implicit (dotted): inferred dependency
+ * Edges are dimmed by default (opacity 0.08) and only highlight when
+ * connected to the currently selected node — keeps dense graphs readable.
  */
 const RawVizEdge = ({
   id,
+  source,
+  target,
   sourceX,
   sourceY,
   targetX,
@@ -35,48 +34,42 @@ const RawVizEdge = ({
   const edgeType = edgeData?.edgeType ?? 'explicit';
   const labelText = edgeData?.label;
 
-  const [edgePath, labelX, labelY] = getSmoothStepPath({
+  const selectedNodeId = useVisualizerStore((s) => s.selectedNodeId);
+  const isConnectedToSelection = selectedNodeId !== null
+    && (source === selectedNodeId || target === selectedNodeId);
+
+  const isHighlighted = selected || isConnectedToSelection;
+
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
     targetY,
     sourcePosition,
     targetPosition,
-    borderRadius: 12,
   });
 
-  const strokeDasharray = edgeType === 'ghost'
-    ? '4,6'
-    : edgeType === 'terragrunt'
-      ? '6,4'
-      : edgeType === 'implicit'
-        ? '2,4'
-        : 'none';
+  const isGhost = edgeType === 'ghost';
 
-  const strokeColor = edgeType === 'ghost'
-    ? 'var(--muted-foreground)'
-    : edgeType === 'terragrunt'
-      ? 'var(--accent)'
-      : selected
-        ? 'var(--primary)'
-        : 'var(--muted-foreground)';
+  const strokeDasharray = isGhost ? '6,8' : 'none';
+  const strokeColor = isHighlighted ? 'var(--foreground)' : isGhost ? 'var(--muted-foreground)' : 'var(--foreground)';
+  const strokeOpacity = isHighlighted ? 1 : isGhost ? 0.15 : 0.08;
 
-  const strokeOpacity = edgeType === 'ghost' ? 0.3 : 1;
+  const showLabel = labelText && isHighlighted;
 
   return (
     <>
-      <BaseEdge
+      <path
         id={id}
-        path={edgePath}
-        style={{
-          stroke: strokeColor,
-          strokeWidth: selected ? 2 : 1.5,
-          strokeDasharray,
-          opacity: strokeOpacity,
-          transition: 'stroke 0.15s, stroke-width 0.15s',
-        }}
+        d={edgePath}
+        fill="none"
+        stroke={strokeColor}
+        strokeWidth={isHighlighted ? 2.5 : 1.5}
+        strokeDasharray={strokeDasharray}
+        opacity={strokeOpacity}
+        style={{ transition: 'stroke 0.15s, stroke-width 0.15s, opacity 0.15s' }}
       />
-      {labelText && (
+      {showLabel && (
         <EdgeLabelRenderer>
           <div
             className="nodrag nopan pointer-events-none absolute"
@@ -94,4 +87,4 @@ const RawVizEdge = ({
   );
 };
 
-export const VizEdge = memo(RawVizEdge);
+export const VizEdge = RawVizEdge;

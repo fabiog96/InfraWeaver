@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useReactFlow } from '@xyflow/react';
 
 import type { GraphNode, GraphEdge } from '../resolver/types';
-import { computeLayout } from '../layout/auto-layout';
+import { computeLayout, groupNodesByFile } from '../layout/auto-layout';
 import { loadPositions } from '../layout/position-persistence';
 import { useVisualizerStore } from '../stores/visualizerStore';
 import { useGitHubStore } from '../stores/githubStore';
@@ -34,7 +34,7 @@ export const useProjectVisualization = () => {
     if (graphNodes.length === 0 || !projectCatalog) return;
 
     const buildAndLayout = async () => {
-      const { visibleNodes, visibleEdges } = filterForView(
+      const { visibleNodes, visibleEdges, ghostNodeIds } = filterForView(
         graphNodes,
         graphEdges,
         projectCatalog,
@@ -47,9 +47,11 @@ export const useProjectVisualization = () => {
       const repoKey = `${owner}/${repo}`;
       const posKey = `${repoKey}/${branch}/${selectedProject ?? 'all'}`;
       const savedPositions = loadPositions(posKey, branch);
-      const { nodes: flowNodes, edges: flowEdges } = computeLayout(
+      const { nodes: flatNodes, edges: flowEdges } = computeLayout(
         visibleNodes, visibleEdges, savedPositions,
       );
+
+      const flowNodes = groupNodesByFile(flatNodes, ghostNodeIds);
 
       setFlowElements(flowNodes, flowEdges);
 
@@ -79,17 +81,17 @@ const filterForView = (
   selectedSubproject: string | null,
   selectedModule: string | null,
   expandedModuleId: string | null,
-): { visibleNodes: GraphNode[]; visibleEdges: GraphEdge[] } => {
+): { visibleNodes: GraphNode[]; visibleEdges: GraphEdge[]; ghostNodeIds: Set<string> } => {
   // Module selected → show its internal resources
   if (selectedModule) {
     const moduleInfo = catalog.modules.get(selectedModule);
-    if (!moduleInfo) return { visibleNodes: [], visibleEdges: [] };
+    if (!moduleInfo) return { visibleNodes: [], visibleEdges: [], ghostNodeIds: new Set() };
 
     const moduleIds = new Set(moduleInfo.internalResourceIds);
     const visible = allNodes.filter((n) => moduleIds.has(n.id));
     const visibleIds = new Set(visible.map((n) => n.id));
     const edges = allEdges.filter((e) => visibleIds.has(e.source) && visibleIds.has(e.target));
-    return { visibleNodes: visible, visibleEdges: edges };
+    return { visibleNodes: visible, visibleEdges: edges, ghostNodeIds: new Set() };
   }
 
   // No project selected → show all (hide module internals)
@@ -97,13 +99,13 @@ const filterForView = (
     const visible = allNodes.filter((n) => !n.isModuleInternal);
     const visibleIds = new Set(visible.map((n) => n.id));
     const edges = allEdges.filter((e) => visibleIds.has(e.source) && visibleIds.has(e.target));
-    return { visibleNodes: visible, visibleEdges: edges };
+    return { visibleNodes: visible, visibleEdges: edges, ghostNodeIds: new Set() };
   }
 
   // Get project resource IDs
   const projectInfo = catalog.projects.get(selectedProject);
   if (!projectInfo) {
-    return { visibleNodes: [], visibleEdges: [] };
+    return { visibleNodes: [], visibleEdges: [], ghostNodeIds: new Set() };
   }
 
   let targetIds: Set<string>;
@@ -163,5 +165,6 @@ const filterForView = (
   return {
     visibleNodes: [...primaryNodes, ...ghostNodes],
     visibleEdges,
+    ghostNodeIds,
   };
 };

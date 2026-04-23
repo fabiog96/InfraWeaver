@@ -65,16 +65,29 @@ export const VisualizerCanvas = () => {
     setSelectedNode(null);
   }, [setSelectedNode]);
 
-  /** Persists node positions to localStorage per project. */
+  /** Persists node positions to localStorage per project.
+   *  Grouped nodes have relative positions — convert to absolute before saving. */
   const onNodeDragStop = useCallback(
     (_: React.MouseEvent, node: Node) => {
       if (!owner || !repo || !branch) return;
       const posKey = `${owner}/${repo}/${branch}/${selectedProject ?? 'all'}`;
       const existing = loadPositions(posKey, branch);
-      existing[node.id] = { x: node.position.x, y: node.position.y };
+
+      let absolutePosition = { x: node.position.x, y: node.position.y };
+      if (node.parentId) {
+        const parentNode = flowNodes.find((n) => n.id === node.parentId);
+        if (parentNode) {
+          absolutePosition = {
+            x: node.position.x + parentNode.position.x,
+            y: node.position.y + parentNode.position.y,
+          };
+        }
+      }
+
+      existing[node.id] = absolutePosition;
       savePositions(posKey, branch, existing);
     },
-    [owner, repo, branch, selectedProject],
+    [owner, repo, branch, selectedProject, flowNodes],
   );
 
   const defaultEdgeOptions = useMemo(() => ({

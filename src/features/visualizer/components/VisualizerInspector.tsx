@@ -30,7 +30,7 @@ export const VisualizerInspector = () => {
     };
   }, [graphEdges, selectedNodeId]);
 
-  if (!selectedNode) {
+  if (!selectedNode || selectedNode.type === 'vizGroup') {
     return (
       <div className="flex w-72 flex-col border-l border-border bg-card">
         <div className="p-3 text-xs text-muted-foreground">
