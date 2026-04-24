@@ -24,5 +24,5 @@ export const router = createBrowserRouter(
       element: <VisualizerPage />,
     },
   ],
-  { basename: '/infra-weaver' },
+  { basename: '/InfraWeaver' },
 );
