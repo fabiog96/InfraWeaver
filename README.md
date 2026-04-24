@@ -1,185 +1,94 @@
-# Diagrammer Farm
+<p align="center">
+  <svg width="80" height="58" viewBox="0 0 220 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 122 C 26 122, 18 102, 30 86 C 24 66, 44 50, 62 56 C 70 40, 96 36, 108 48 C 124 38, 150 44, 156 62 C 178 58, 196 72, 196 92 C 204 100, 208 114, 200 124 C 194 134, 184 138, 172 134 L 60 134 C 54 132, 48 128, 50 122 Z" fill="none" stroke="#ffffffff" stroke-width="5" stroke-linejoin="round"/>
+    <line x1="82" y1="92" x2="118" y2="76" stroke="#c45a1c" stroke-width="4" stroke-linecap="round"/>
+    <line x1="118" y1="76" x2="150" y2="100" stroke="#c45a1c" stroke-width="4" stroke-linecap="round"/>
+    <line x1="82" y1="92" x2="150" y2="100" stroke="#c45a1c" stroke-width="4" stroke-linecap="round" stroke-dasharray="1.5 5"/>
+    <circle cx="82" cy="92" r="10" fill="#c45a1c"/>
+    <circle cx="118" cy="76" r="10" fill="#c45a1c"/>
+    <circle cx="150" cy="100" r="10" fill="#c45a1c"/>
+  </svg>
+</p>
 
-A web-based tool for visually designing cloud architectures on a canvas and generating production-ready **Terragrunt/Terraform** repositories from them — no manual HCL writing required.
+<h1 align="center"><span style="color: #c45a1c;"><strong>INFRA</strong></span>WEAVER</h1>
 
-## Features
-
-### Canvas & Diagramming
-- **Drag-and-drop canvas** powered by React Flow — infinite, pannable, zoomable
-- **AWS service nodes** — 19 supported services with dedicated icons and categories
-- **Generic nodes** — Server, Database, Storage, Compute, Network, Users, React, JSON, **Note**
-- **Group nodes** — visual containers that map to Terragrunt folder hierarchy
-- **Auto-parenting** — drag a node into a group to nest it automatically
-- **Smart edges** — animated connections with configurable label and line style (solid/dashed/dotted)
-- **Output mappings** — wire source outputs to target inputs directly on edges
-- **Note nodes** — free-text nodes that display content directly on the canvas
-
-### Packaged Modules
-Pre-configured multi-node architectures draggable from the sidebar:
-- **Serverless API** — API Gateway + Lambda + DynamoDB + IAM Role, wired and grouped
-
-### Inspector Panel
-- **Dynamic Terraform inputs** — schema-driven form generated from module definition
-  - Dropdowns for enum fields: EC2 instance types, Lambda runtimes, RDS engines/instance classes, ElastiCache node types
-- **Secrets management** — password fields with reveal toggle, source indicator (`env` / `secretsmanager` / `ssm`)
-- **Module outputs** — read-only list of available Terraform outputs
-- **Notes field** — free-text note per node, displayed as a preview on the canvas node
-- **Edge output mappings** — map source module outputs to target module inputs via dropdowns
-
-### HCL Generation Engine (live preview)
-Every change to the canvas or inspector regenerates code in real time (debounced):
-
-| File | Content |
-|------|---------|
-| `main.tf` | `resource` blocks from module definition |
-| `variables.tf` | `variable` blocks with types and defaults |
-| `outputs.tf` | `output` blocks with Terraform expressions |
-| `terragrunt.hcl` | `include`, `dependency`, `inputs` blocks |
-| `terragrunt.hcl` (root) | Remote state (S3 + DynamoDB lock), `generate "provider"` with `default_tags` |
-| `_env/common.hcl` | Shared locals (region, environment, project) |
-
-**Dependency engine** — edges generate `dependency {}` blocks with relative `config_path` and `dependency.X.outputs.Y` references in inputs.
-
-### Code Panel (bottom panel)
-- **Code tab** — file tree on the left, HCL preview on the right with line numbers
-- **Problems tab** — validation messages with severity badges (errors/warnings count)
-
-### Validation Engine
-| Check | Severity |
-|-------|----------|
-| Required input not set | Error |
-| Circular dependency detected | Error |
-| Mixed module/non-module edge | Warning |
-| Missing implicit dependency (e.g. VPC) | Warning |
-| Invalid output mapping | Warning |
-| Node not in a group | Info |
-
-Visual feedback: error nodes show a red ring, warning nodes a yellow ring; edges follow the same color coding.
-
-### Global Configuration
-Accessible via the settings button in the TopBar:
-- AWS Region
-- Environment (`dev` / `staging` / `prod`)
-- Project & Subproject name
-- State bucket name (auto-derived, editable)
-- DynamoDB lock table name (auto-derived, editable)
-- CI/CD Provider (`GitHub Actions` / `GitLab CI` / `None`)
-
-### Export
-- **Terragrunt Project (.zip)** — full `infrastructure-live/` folder with all `.tf` + `.hcl` files, README, and CI/CD pipeline
-- **PNG / JPG** — high-res canvas screenshot
-- **JSON** — diagram data (nodes + edges)
-
-The ZIP includes:
-- All generated `main.tf`, `variables.tf`, `outputs.tf`, `terragrunt.hcl` per module
-- Root `terragrunt.hcl` with remote state and provider config
-- `_env/common.hcl` with shared locals
-- `.github/workflows/deploy.yml` (GitHub Actions) or `.gitlab-ci.yml` (GitLab CI)
-- `README.md` with prerequisites, quick start, module table, and env var list
+<p align="center">
+  Design cloud architectures visually. Export production-ready Terraform & Terragrunt — zero HCL writing required.
+</p>
 
 ---
 
-## Tech Stack
+## What is InfraWeaver?
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 + TypeScript + Vite |
-| Canvas | React Flow (`@xyflow/react` v12) |
-| State | Zustand |
-| Styling | Tailwind CSS v4 |
-| UI Primitives | Radix UI |
-| Icons | React Icons |
-| Validation | Zod |
-| ZIP export | JSZip |
+InfraWeaver turns a visual canvas into a fully structured **Terraform/Terragrunt** repository. Draw your architecture, configure your resources, and download a deployment-ready project in seconds.
+
+It works in two modes:
+
+- **Designer** — build cloud architectures from scratch on an infinite canvas, and generate all the IaC code automatically
+- **Visualizer** — import an existing Terraform repo from GitHub and explore your infrastructure as an interactive diagram
 
 ---
 
-## Project Structure
+## Key Capabilities
 
-```text
-src/
-├── features/
-│   ├── codegen/                  # HCL generation engine
-│   │   ├── components/           # CodePanel, FileTree, CodeViewer, GlobalConfigPanel
-│   │   ├── data/                 # Module registry + 19 AWS module definitions
-│   │   ├── generators/           # hcl, variables, outputs, terragrunt, root, cicd, readme renderers
-│   │   ├── hooks/                # useCodeGeneration
-│   │   ├── stores/               # globalConfigStore, validationStore
-│   │   ├── types/                # TerraformModule, ModuleInput, ResourceBlock...
-│   │   ├── utils/                # export-to-zip
-│   │   └── validators/           # diagram-validator (6 checks)
-│   ├── editor/                   # Canvas, TechNode, GroupNode, SmartEdge, TopBar
-│   ├── export/                   # PNG/JPG/JSON/ZIP export dialog and hook
-│   ├── inspector/                # NodeForm, EdgeForm, ModuleInputsForm, SecretsForm, OutputsList
-│   ├── library/                  # Service data (AWS/Generic), LibrarySidebar, drag hook
-│   └── packaged-modules/         # Pre-configured multi-node modules (Serverless API)
-├── shared/
-│   ├── components/ui/            # Radix-based component kit
-│   ├── icons/                    # ServiceIcon map
-│   └── types/                    # DiagramNode, DiagramEdge, TechNodeData, EdgeData...
-├── stores/
-│   ├── diagramStore.ts           # Nodes, edges, selection, setNodeParent
-│   └── uiStore.ts                # Sidebar toggles, CodePanel state, theme
-├── App.tsx
-└── main.tsx
-```
+### Design with drag-and-drop
 
-### AWS Modules
+Drag **60+ AWS services** and generic components onto the canvas, group them into logical folders, and connect them with smart edges. InfraWeaver handles the rest: dependencies, variable wiring, and folder structure.
 
-| Module | Category | Notable inputs |
-|--------|----------|----------------|
-| `aws-lambda` | compute | runtime (dropdown), handler, memory_size, timeout |
-| `aws-ec2` | compute | instance_type (dropdown ~70 types), ami, key_name |
-| `aws-ecs` | compute | cpu, memory, image |
-| `aws-eks` | compute | node_count, instance_types |
-| `aws-api-gateway` | networking | name, protocol_type |
-| `aws-elb` | networking | load_balancer_type, internal |
-| `aws-route53` | networking | zone_name, record_type |
-| `aws-cloudfront` | networking | origins, default_cache_behavior |
-| `aws-vpc` | networking | cidr_block, enable_dns_support |
-| `aws-dynamodb` | database | hash_key, billing_mode |
-| `aws-rds` | database | engine (dropdown), instance_class (dropdown), identifier |
-| `aws-elasticache` | database | engine (dropdown), node_type (dropdown) |
-| `aws-s3` | storage | bucket, versioning |
-| `aws-kinesis` | streaming | shard_count |
-| `aws-sqs` | messaging | fifo_queue, visibility_timeout |
-| `aws-sns` | messaging | name, subscriptions |
-| `aws-cognito` | security | user_pool_name, mfa_configuration |
-| `aws-iam` | security | name, policy_arns |
-| `aws-sagemaker` | ml | instance_type, model_name |
+### Pre-built architecture templates
+
+Start fast with **Packaged Modules** — pre-configured multi-resource patterns like Serverless API, CloudFront + S3, ECS Microservice, ETL Pipeline, and more. Drop them on the canvas fully wired and ready to customize.
+
+### Live code generation
+
+Every change on the canvas is reflected in real time. The Code Panel shows a complete file tree with all generated `main.tf`, `variables.tf`, `outputs.tf`, `terragrunt.hcl`, root configuration, CI/CD pipelines, and README — all kept in sync as you design.
+
+### Smart validation
+
+A built-in validation engine catches errors before you export: missing required inputs, circular dependencies, broken output mappings, missing implicit dependencies (like a VPC), and more. Visual rings on the canvas give immediate feedback.
+
+### Configurable infrastructure settings
+
+Set AWS region, environment (`dev` / `staging` / `prod`), project name, remote state backend (S3 + DynamoDB lock), and CI/CD provider (GitHub Actions, GitLab CI) — all baked into the generated code with proper `default_tags`.
+
+### Export anything
+
+| Format | What you get |
+|--------|-------------|
+| **Terragrunt Project (.zip)** | Full `infrastructure-live/` repo — ready to `git init && terragrunt run-all apply` |
+| **PNG / JPG** | High-resolution canvas screenshot |
+| **JSON** | Diagram data for backup and re-import |
+
+### Visualize existing infrastructure
+
+Point InfraWeaver at a GitHub repository containing Terraform files. It parses HCL, discovers projects and modules, and renders an interactive graph — grouped by project, subproject, and source file.
+
+---
+
+## Supported AWS Services
+
+Compute, Storage, Database, Networking, Messaging, Security, Analytics, ML, Streaming, and more — including Lambda, EC2, ECS, EKS, S3, DynamoDB, RDS, ElastiCache, API Gateway, CloudFront, VPC, SQS, SNS, Cognito, IAM, SageMaker, Kinesis, Route 53, and ELB.
+
+Each service comes with schema-driven input forms, enum dropdowns (instance types, runtimes, engines), secrets management, and output definitions.
 
 ---
 
 ## Getting Started
-
-### Prerequisites
-
-- Node.js v18+
-
-### Install & Run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`.
-
-### Build
-
-```bash
-npm run build
-```
+Open `http://localhost:5173` and start designing.
 
 ---
 
 ## Workflow
 
-1. **Design** — drag AWS services or Packaged Modules onto the canvas
-2. **Group** — drag nodes into Group nodes to define folder structure
-3. **Configure** — click a node to fill Terraform inputs, secrets, and notes in the Inspector
-4. **Connect** — draw edges between nodes; configure output→input mappings on each edge
-5. **Preview** — open the Code Panel (bottom) to see live-generated HCL files
-6. **Validate** — check the Problems tab for errors and warnings before exporting
-7. **Configure globals** — set region, environment, project name, and CI/CD provider via the settings button
-8. **Export** — download the full Terragrunt project as a ZIP, ready to `git init` and deploy
+1. **Drag** services or packaged modules onto the canvas
+2. **Group** nodes into folders to define your Terragrunt structure
+3. **Configure** each resource from the Inspector panel
+4. **Connect** nodes and map outputs to inputs on each edge
+5. **Review** the live-generated code and fix any validation warnings
+6. **Export** the full Terragrunt project as a ZIP — deploy-ready

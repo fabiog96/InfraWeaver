@@ -39,7 +39,7 @@ export const TopBar = () => {
 
           <Logo size={20} className="text-ink" />
           <span className="text-xs font-bold text-primary tracking-widest">
-            ARCH
+            INFRA
           </span>
           <span className="text-xs text-muted-foreground tracking-wider">
             DESIGNER

@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 @import "@xyflow/react/dist/style.css";
 
@@ -19,22 +18,22 @@
 /* ── OKLCH Design Tokens ─────────────────────────────── */
 
 :root {
-  /* Light (default) */
-  --paper:        oklch(0.965 0.012 80);
-  --paper-2:      oklch(0.945 0.014 80);
-  --paper-3:      oklch(0.92  0.016 80);
-  --ink:          oklch(0.22  0.012 60);
-  --ink-2:        oklch(0.36  0.012 60);
-  --ink-3:        oklch(0.55  0.014 60);
-  --ink-4:        oklch(0.72  0.012 70);
-  --rule:         oklch(0.87  0.014 70);
-  --rule-strong:  oklch(0.78  0.016 65);
-  --accent:       oklch(0.62  0.17  50);
-  --accent-ink:   oklch(0.32  0.14  50);
-  --accent-wash:  oklch(0.92  0.05  60);
+  /* Light (default) — warm parchment palette */
+  --paper:        oklch(0.944 0.018 82);   /* #f3ece0  crema caldo */
+  --paper-2:      oklch(0.958 0.015 84);   /* #f8f2e7  avorio (surface) */
+  --paper-3:      oklch(0.925 0.020 80);
+  --ink:          oklch(0.18  0.010 65);    /* #1b1915  nero caldo */
+  --ink-2:        oklch(0.30  0.012 70);    /* #3a362d */
+  --ink-3:        oklch(0.59  0.016 80);    /* #8a8272  sabbia */
+  --ink-4:        oklch(0.81  0.018 80);    /* #c9bda6  dot */
+  --rule:         oklch(0.84  0.024 80);    /* #d4c8b2 */
+  --rule-strong:  oklch(0.76  0.032 78);    /* #bdae92 */
+  --accent:       oklch(0.54  0.155 48);    /* #c45a1c  arancio bruciato */
+  --accent-ink:   oklch(0.40  0.120 48);    /* #8a3a0e */
+  --accent-wash:  oklch(0.92  0.05  55);
   --teal:         oklch(0.58  0.08  210);
   --teal-wash:    oklch(0.92  0.03  200);
-  --ok:           oklch(0.60  0.11  135);
+  --ok:           oklch(0.48  0.10  140);   /* #3f6e3a  foresta */
   --warn:         oklch(0.72  0.13  80);
   --err:          oklch(0.55  0.18  28);
 }
@@ -84,7 +83,7 @@
 }
 
 @theme inline {
-  --font-sans: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* OKLCH design tokens — usable as Tailwind utilities (bg-paper, text-ink, etc.) */
   --color-paper: var(--paper);

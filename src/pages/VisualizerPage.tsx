@@ -63,7 +63,7 @@ const VisualizerLayout = () => {
             <Separator orientation="vertical" className="mx-1 h-4" />
 
             <Logo size={20} className="text-ink" />
-            <span className="text-xs font-bold text-primary tracking-widest">ARCH</span>
+            <span className="text-xs font-bold text-primary tracking-widest">INFRA</span>
             <span className="text-xs text-muted-foreground tracking-wider">VISUALIZER</span>
 
             {stats && (

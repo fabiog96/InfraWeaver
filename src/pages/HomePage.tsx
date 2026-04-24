@@ -21,7 +21,7 @@ const modes = [
   },
 ] as const;
 
-export const LandingPage = () => {
+export const HomePage = () => {
   const theme = useUIStore((s) => s.theme);
 
   useEffect(() => {
@@ -42,8 +42,7 @@ export const LandingPage = () => {
       <div className="mb-10 flex flex-col items-center gap-3">
         <Logo size={48} className="text-ink" />
         <div className="text-center">
-          <h1 className="text-lg font-bold tracking-widest text-primary">ARCH</h1>
-          <p className="text-xs tracking-wider text-muted-foreground">DIAGRAMMER</p>
+          <h1 className="text-lg font-bold tracking-widest text-primary">INFRAWEAVER</h1>
         </div>
       </div>
 
