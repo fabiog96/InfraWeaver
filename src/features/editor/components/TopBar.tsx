@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-import { TbTrash, TbCode, TbSettings, TbArrowLeft } from 'react-icons/tb';
+import { TbTrash, TbCode, TbSettings, TbArrowLeft, TbUpload } from 'react-icons/tb';
 
 import {
   Button,
@@ -11,6 +11,7 @@ import {
 import { useDiagramStore, useUIStore } from '@/stores';
 import { Logo } from '@/shared/icons/Logo';
 import { ExportDialog } from '@/features/export/components';
+import { useImport } from '@/features/export/hooks';
 import { ThemeToggle } from '@/shared/components/ThemeToggle';
 import { GlobalConfigPanel } from '@/features/codegen/components';
 
@@ -19,6 +20,7 @@ export const TopBar = () => {
   const toggleCodePanel = useUIStore((s) => s.toggleCodePanel);
   const codePanelOpen = useUIStore((s) => s.codePanelOpen);
   const [configOpen, setConfigOpen] = useState(false);
+  const { fileInputRef, handleFileChange, triggerImport } = useImport();
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -94,6 +96,23 @@ export const TopBar = () => {
           <ThemeToggle />
 
           <Separator orientation="vertical" className="mx-1 h-4" />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={triggerImport}>
+                <TbUpload className="h-3.5 w-3.5" />
+                Import
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Import diagram from JSON</TooltipContent>
+          </Tooltip>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={handleFileChange}
+          />
 
           <ExportDialog />
         </div>

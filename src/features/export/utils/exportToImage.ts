@@ -10,7 +10,7 @@ interface ExportOptions {
 }
 
 const getFlowElement = (): HTMLElement | null => {
-  return document.querySelector('.react-flow__viewport') as HTMLElement | null;
+  return document.querySelector('.react-flow') as HTMLElement | null;
 };
 
 const downloadBlob = (dataUrl: string, filename: string) => {
@@ -68,7 +68,6 @@ export const exportDiagramToImage = async (options: ExportOptions) => {
     const dataUrl = await convertFn(element, {
       quality,
       pixelRatio,
-      backgroundColor: '#121212',
       filter: (node) => {
         const el = node as HTMLElement;
         return !(
