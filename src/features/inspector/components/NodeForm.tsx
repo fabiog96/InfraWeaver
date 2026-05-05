@@ -66,7 +66,7 @@ export const NodeForm = () => {
   const tfModule = getModule(nodeData.moduleId);
 
   return (
-    <div className="space-y-3 p-3">
+    <div className="space-y-3 overflow-hidden p-3">
       <div className="space-y-1">
         <Label>Label</Label>
         <Input

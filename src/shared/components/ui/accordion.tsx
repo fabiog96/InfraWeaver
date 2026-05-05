@@ -1,56 +1,63 @@
-import { forwardRef, type ComponentPropsWithoutRef } from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 
-import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { RxChevronDown } from 'react-icons/rx';
 
 import { cn } from '@/shared/lib/utils';
 
-const Accordion = AccordionPrimitive.Root;
+interface AccordionProps extends HTMLAttributes<HTMLDivElement> {
+  type?: 'single' | 'multiple';
+  defaultValue?: string[];
+  value?: string[];
+}
 
-const AccordionItem = forwardRef<
-  HTMLDivElement,
-  ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
->(({ className, ...props }, ref) => (
-  <AccordionPrimitive.Item
-    ref={ref}
-    className={cn('border-b border-border/50', className)}
-    {...props}
-  />
-));
+const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ className, type, defaultValue, value, ...props }, ref) => (
+    <div ref={ref} className={cn('', className)} {...props} />
+  ),
+);
+Accordion.displayName = 'Accordion';
+
+interface AccordionItemProps extends HTMLAttributes<HTMLDetailsElement> {
+  value?: string;
+}
+
+const AccordionItem = forwardRef<HTMLDetailsElement, AccordionItemProps>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ className, value, ...props }, ref) => (
+    <details ref={ref} open className={cn('border-b border-border/50 group', className)} {...props} />
+  ),
+);
 AccordionItem.displayName = 'AccordionItem';
 
-const AccordionTrigger = forwardRef<
-  HTMLButtonElement,
-  ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Header className="flex">
-    <AccordionPrimitive.Trigger
-      ref={ref}
+interface AccordionTriggerProps extends HTMLAttributes<HTMLElement> {
+  children?: ReactNode;
+}
+
+const AccordionTrigger = forwardRef<HTMLElement, AccordionTriggerProps>(
+  ({ className, children, ...props }, ref) => (
+    <summary
+      ref={ref as React.Ref<HTMLElement>}
       className={cn(
-        'flex flex-1 items-center justify-between py-2 text-xs font-medium transition-colors duration-150 hover:text-primary [&[data-state=open]>svg]:rotate-180',
+        'flex cursor-pointer list-none items-center justify-between py-2 text-xs font-medium transition-colors duration-150 hover:text-primary [&::-webkit-details-marker]:hidden',
         className,
       )}
       {...props}
     >
       {children}
-      <RxChevronDown className="h-3 w-3 shrink-0 text-muted-foreground transition-transform duration-200" />
-    </AccordionPrimitive.Trigger>
-  </AccordionPrimitive.Header>
-));
+      <RxChevronDown className="h-3 w-3 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+    </summary>
+  ),
+);
 AccordionTrigger.displayName = 'AccordionTrigger';
 
-const AccordionContent = forwardRef<
-  HTMLDivElement,
-  ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Content
-    ref={ref}
-    className="overflow-hidden text-xs data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
-    {...props}
-  >
-    <div className={cn('pb-2 pt-0', className)}>{children}</div>
-  </AccordionPrimitive.Content>
-));
+const AccordionContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => (
+    <div ref={ref} className={cn('overflow-hidden text-xs', className)} {...props}>
+      <div className={cn('pb-2 pt-0')}>{children}</div>
+    </div>
+  ),
+);
 AccordionContent.displayName = 'AccordionContent';
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };

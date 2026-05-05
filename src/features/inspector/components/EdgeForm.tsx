@@ -96,7 +96,7 @@ export const EdgeForm = () => {
   const canMapOutputs = sourceModule && targetModule;
 
   return (
-    <div className="space-y-3 p-3">
+    <div className="space-y-3 overflow-hidden p-3">
       <div className="space-y-1">
         <Label>Connection Label</Label>
         <Input
@@ -148,35 +148,39 @@ export const EdgeForm = () => {
 
             {mappings.map((mapping, i) => (
               <div key={i} className="flex items-center gap-1">
-                <Select
-                  value={mapping.sourceOutput}
-                  onValueChange={(v) => handleUpdateMapping(i, 'sourceOutput', v)}
-                >
-                  <SelectTrigger className="h-7 text-[10px] flex-1">
-                    <SelectValue placeholder="Output" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sourceModule.outputs.map((o) => (
-                      <SelectItem key={o.name} value={o.name}>{o.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="min-w-0 flex-1">
+                  <Select
+                    value={mapping.sourceOutput}
+                    onValueChange={(v) => handleUpdateMapping(i, 'sourceOutput', v)}
+                  >
+                    <SelectTrigger className="h-7 w-full overflow-hidden text-[10px]">
+                      <span className="truncate">{mapping.sourceOutput || 'Output'}</span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sourceModule.outputs.map((o) => (
+                        <SelectItem key={o.name} value={o.name}>{o.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 <span className="text-[10px] text-muted-foreground shrink-0">&rarr;</span>
 
-                <Select
-                  value={mapping.targetInput}
-                  onValueChange={(v) => handleUpdateMapping(i, 'targetInput', v)}
-                >
-                  <SelectTrigger className="h-7 text-[10px] flex-1">
-                    <SelectValue placeholder="Input" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {targetModule.inputs.map((inp) => (
-                      <SelectItem key={inp.name} value={inp.name}>{inp.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="min-w-0 flex-1">
+                  <Select
+                    value={mapping.targetInput}
+                    onValueChange={(v) => handleUpdateMapping(i, 'targetInput', v)}
+                  >
+                    <SelectTrigger className="h-7 w-full overflow-hidden text-[10px]">
+                      <span className="truncate">{mapping.targetInput || 'Input'}</span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {targetModule.inputs.map((inp) => (
+                        <SelectItem key={inp.name} value={inp.name}>{inp.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 <Button
                   variant="ghost"

@@ -1,7 +1,24 @@
 import type { ServiceDefinition } from '@/shared/types';
 
+const categoryColors: Record<string, string> = {
+  compute: '#FF9900',
+  containers: '#FF9900',
+  storage: '#3B922E',
+  database: '#3366CC',
+  networking: '#8C4FFF',
+  messaging: '#E7157B',
+  integration: '#E7157B',
+  security: '#DD344C',
+  monitoring: '#00A1C9',
+  analytics: '#527FFF',
+  ml: '#116D5B',
+  devtools: '#00A1C9',
+  management: '#B0084D',
+};
+
 const aws = (id: string, label: string, serviceType: string, category: string): ServiceDefinition => ({
-  id: `aws-${id}`, label, provider: 'aws', serviceType, icon: `aws-${id}`, category, defaultColor: '#FF9900',
+  id: `aws-${id}`, label, provider: 'aws', serviceType, icon: `aws-${id}`, category,
+  defaultColor: categoryColors[category] ?? '#FF9900',
 });
 
 export const awsServices: ServiceDefinition[] = [
@@ -28,6 +45,7 @@ export const awsServices: ServiceDefinition[] = [
   // Database
   aws('rds', 'RDS', 'RDS Instance', 'database'),
   aws('dynamodb', 'DynamoDB', 'DynamoDB Table', 'database'),
+  aws('dynamodb-streams', 'DynamoDB Streams', 'DynamoDB Stream', 'integration'),
   aws('elasticache', 'ElastiCache', 'ElastiCache Cluster', 'database'),
   aws('aurora', 'Aurora', 'Aurora Cluster', 'database'),
   aws('redshift', 'Redshift', 'Data Warehouse', 'database'),
@@ -45,6 +63,16 @@ export const awsServices: ServiceDefinition[] = [
   aws('direct-connect', 'Direct Connect', 'Direct Connect', 'networking'),
   aws('privatelink', 'PrivateLink', 'VPC Endpoint', 'networking'),
   aws('global-accelerator', 'Global Accelerator', 'Global Accelerator', 'networking'),
+
+  // Event Sources
+  aws('s3-event', 'S3 Event', 'S3 Event Notification', 'integration'),
+  aws('cloudwatch-alarm', 'CW Alarm', 'CloudWatch Alarm', 'monitoring'),
+  aws('cloudwatch-event', 'CW Event', 'CloudWatch Event', 'integration'),
+  aws('cognito-trigger', 'Cognito Trigger', 'Cognito User Pool Trigger', 'integration'),
+  aws('eventbridge-rule', 'EB Rule', 'EventBridge Rule', 'integration'),
+  aws('eventbridge-scheduler', 'EB Scheduler', 'EventBridge Scheduler', 'integration'),
+  aws('sns-topic', 'SNS Topic', 'SNS Topic', 'messaging'),
+  aws('sqs-queue', 'SQS Queue', 'SQS Queue', 'messaging'),
 
   // Messaging
   aws('sns', 'SNS', 'Simple Notification', 'messaging'),

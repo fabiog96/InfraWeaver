@@ -11,11 +11,9 @@ export const ExportDialog = () => {
 
   return (
     <Dialog onOpenChange={(open) => { if (open) clearError(); }}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-1.5">
-          <TbDownload className="h-3.5 w-3.5" />
-          Export
-        </Button>
+      <DialogTrigger className="inline-flex h-7 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border border-border bg-transparent px-2.5 text-[11px] font-medium transition-colors duration-150 hover:bg-secondary hover:text-foreground">
+        <TbDownload className="h-3.5 w-3.5" />
+        Export
       </DialogTrigger>
       <DialogContent className="max-w-xs">
         <DialogHeader>

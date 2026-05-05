@@ -50,12 +50,10 @@ const VisualizerLayout = () => {
         <div className="flex h-10 items-center justify-between border-b border-border bg-card px-3">
           <div className="flex items-center gap-1.5">
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                  <Link to="/">
-                    <TbArrowLeft className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
+              <TooltipTrigger>
+                <Link to="/" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
+                  <TbArrowLeft className="h-3.5 w-3.5" />
+                </Link>
               </TooltipTrigger>
               <TooltipContent>Back to home</TooltipContent>
             </Tooltip>
@@ -91,7 +89,7 @@ const VisualizerLayout = () => {
             )}
 
             <Tooltip>
-              <TooltipTrigger asChild>
+              <TooltipTrigger>
                 <Button
                   variant="ghost"
                   size="icon"

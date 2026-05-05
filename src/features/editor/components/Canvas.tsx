@@ -90,6 +90,7 @@ export const Canvas = () => {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         defaultEdgeOptions={{ type: 'smart', animated: false }}
+        connectionMode={'loose' as never}
         snapToGrid
         snapGrid={[16, 16]}
         fitView

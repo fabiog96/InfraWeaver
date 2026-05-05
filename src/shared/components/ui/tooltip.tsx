@@ -1,27 +1,43 @@
-import { forwardRef, type ComponentPropsWithoutRef } from 'react';
-
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { type ReactNode, type HTMLAttributes } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
-const TooltipProvider = TooltipPrimitive.Provider;
-const Tooltip = TooltipPrimitive.Root;
-const TooltipTrigger = TooltipPrimitive.Trigger;
+interface TooltipProviderProps {
+  children: ReactNode;
+  delayDuration?: number;
+}
 
-const TooltipContent = forwardRef<
-  HTMLDivElement,
-  ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
+const TooltipProvider = ({ children }: TooltipProviderProps) => <>{children}</>;
+
+const Tooltip = ({ children }: { children: ReactNode }) => (
+  <div className="group/tooltip relative inline-flex">{children}</div>
+);
+
+interface TooltipTriggerProps extends HTMLAttributes<HTMLDivElement> {
+  asChild?: boolean;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const TooltipTrigger = ({ children, asChild, ...props }: TooltipTriggerProps) => (
+  <div {...props}>{children}</div>
+);
+
+interface TooltipContentProps extends HTMLAttributes<HTMLDivElement> {
+  sideOffset?: number;
+  side?: 'top' | 'bottom' | 'left' | 'right';
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const TooltipContent = ({ className, children, sideOffset, side, ...props }: TooltipContentProps) => (
+  <div
     className={cn(
-      'z-50 overflow-hidden rounded-lg border border-border bg-popover px-2.5 py-1.5 text-[11px] text-popover-foreground animate-in fade-in-0 zoom-in-95',
+      'pointer-events-none absolute left-0 top-full z-50 mt-1.5 whitespace-nowrap rounded-lg border border-border bg-popover px-2.5 py-1.5 text-[11px] text-popover-foreground opacity-0 transition-opacity duration-150 group-hover/tooltip:opacity-100',
       className,
     )}
     {...props}
-  />
-));
-TooltipContent.displayName = 'TooltipContent';
+  >
+    {children}
+  </div>
+);
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

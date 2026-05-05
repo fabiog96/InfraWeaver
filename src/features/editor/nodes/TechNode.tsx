@@ -38,12 +38,18 @@ const RawTechNode = ({ id, data, selected }: NodeProps) => {
       <Handle type="source" position={Position.Right} id="right" className="!bg-primary !border-background" />
 
       <div className="flex items-center gap-2">
-        <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
-          style={{ backgroundColor: nodeData.color + '18', color: nodeData.color }}
-        >
-          <ServiceIcon icon={nodeData.icon} className="h-4.5 w-4.5" style={{ color: nodeData.color }} />
-        </div>
+        {nodeData.icon.startsWith('aws-') ? (
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-md">
+            <ServiceIcon icon={nodeData.icon} className="h-8 w-8" />
+          </div>
+        ) : (
+          <div
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
+            style={{ backgroundColor: nodeData.color + '18', color: nodeData.color }}
+          >
+            <ServiceIcon icon={nodeData.icon} className="h-4.5 w-4.5" style={{ color: nodeData.color }} />
+          </div>
+        )}
 
         <div className="flex flex-col overflow-hidden">
           <span className="truncate text-xs font-medium text-foreground">
