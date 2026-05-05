@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-import { TbTrash, TbCode, TbSettings, TbArrowLeft, TbUpload } from 'react-icons/tb';
+import { TbTrash, TbCode, TbSettings, TbArrowLeft, TbUpload, TbHelp } from 'react-icons/tb';
 
 import {
   Button,
@@ -113,6 +113,27 @@ export const TopBar = () => {
           />
 
           <ExportDialog />
+
+          <Separator orientation="vertical" className="mx-1 h-4" />
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Link
+                to="/guide/designer"
+                onClick={() => localStorage.setItem('infraweaver-guide-seen', '1')}
+                className="relative inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150"
+              >
+                <TbHelp className="h-3.5 w-3.5" />
+                {!localStorage.getItem('infraweaver-guide-seen') && (
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                  </span>
+                )}
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent className="left-auto right-0">Designer guide</TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
