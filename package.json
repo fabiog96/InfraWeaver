@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloud-icons/react": "^0.0.3",
     "@dagrejs/dagre": "^2.0.4",
     "@xyflow/react": "^12.10.1",
-    "aws-icons": "^3.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "hcl2-parser": "^1.0.3",
