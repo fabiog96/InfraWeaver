@@ -88,7 +88,7 @@ export const GitHubTokenGuidePage = () => {
       {/* TOP BAR */}
       <div className="sticky top-0 z-10 flex h-10 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <Link to="/app" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/visualizer" className="text-muted-foreground hover:text-foreground transition-colors">
             <TbArrowLeft className="h-4 w-4" />
           </Link>
           <div className="flex items-center gap-2">
