@@ -14,7 +14,7 @@ export interface ValidationMessage {
   edgeId?: string;
 }
 
-export type NodeValidationStatus = 'valid' | 'warning' | 'error' | null;
+export type NodeValidationStatus = 'warning' | 'error' | null;
 
 export const validateDiagram = (
   nodes: Node[],
