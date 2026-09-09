@@ -8,9 +8,11 @@ const takeLegacyLocalStorageToken = (): string | null => {
 
 export const readToken = (): string => {
   const legacyToken = takeLegacyLocalStorageToken();
-  if (legacyToken !== null) sessionStorage.setItem(TOKEN_KEY, legacyToken);
+  const sessionToken = sessionStorage.getItem(TOKEN_KEY);
+  if (sessionToken !== null) return sessionToken;
 
-  return sessionStorage.getItem(TOKEN_KEY) ?? '';
+  if (legacyToken !== null) sessionStorage.setItem(TOKEN_KEY, legacyToken);
+  return legacyToken ?? '';
 };
 
 export const writeToken = (token: string): void => {
