@@ -107,7 +107,8 @@ export const GitHubTokenGuidePage = () => {
         </h1>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
           The Visualizer needs a read-only token to fetch your Terraform files from GitHub.
-          Your token stays in your browser — it is never sent to any server.
+          Your token stays in your browser for the current session only — it is never sent to
+          any server.
         </p>
 
         {/* STEPS */}
@@ -150,8 +151,10 @@ export const GitHubTokenGuidePage = () => {
         <div className="mt-8 rounded-md border border-primary/20 bg-primary/5 px-4 py-3">
           <p className="text-[11px] leading-relaxed text-foreground">
             <strong>Security note:</strong> InfraWeaver runs entirely in your browser. Your token is stored
-            only in localStorage and is used exclusively for GitHub API calls from your machine.
-            We recommend revoking the token when you no longer need it.
+            only in sessionStorage and is used exclusively for GitHub API calls from your machine.
+            It does not persist across sessions: closing the tab or the browser discards it, so you
+            will be asked for it again next time. We recommend revoking the token when you no longer
+            need it.
           </p>
         </div>
 
