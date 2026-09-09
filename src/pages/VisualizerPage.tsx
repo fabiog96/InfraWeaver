@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { TbArrowLeft, TbTopologyStarRing3, TbSettings, TbAlertTriangle } from 'react-icons/tb';
+import { TbPencilBolt, TbTopologyStarRing3, TbSettings, TbAlertTriangle } from 'react-icons/tb';
 import { ReactFlowProvider } from '@xyflow/react';
 
 import { useUIStore } from '@/stores';
@@ -51,11 +51,11 @@ const VisualizerLayout = () => {
           <div className="flex items-center gap-1.5">
             <Tooltip>
               <TooltipTrigger>
-                <Link to="/" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
-                  <TbArrowLeft className="h-3.5 w-3.5" />
+                <Link to="/designer" aria-label="Switch to Designer" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
+                  <TbPencilBolt className="h-3.5 w-3.5" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent>Back to home</TooltipContent>
+              <TooltipContent>Switch to Designer</TooltipContent>
             </Tooltip>
 
             <Separator orientation="vertical" className="mx-1 h-4" />

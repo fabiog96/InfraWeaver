@@ -214,10 +214,10 @@ export const DesignerGuidePage = () => {
             Open Designer
           </Link>
           <Link
-            to="/app"
+            to="/visualizer"
             className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-xs text-foreground transition-colors hover:border-foreground"
           >
-            Back to Home
+            Open Visualizer
           </Link>
         </div>
       </div>
