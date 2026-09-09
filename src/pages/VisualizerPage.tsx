@@ -51,7 +51,7 @@ const VisualizerLayout = () => {
           <div className="flex items-center gap-1.5">
             <Tooltip>
               <TooltipTrigger>
-                <Link to="/designer" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
+                <Link to="/designer" aria-label="Switch to Designer" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
                   <TbPencilBolt className="h-3.5 w-3.5" />
                 </Link>
               </TooltipTrigger>

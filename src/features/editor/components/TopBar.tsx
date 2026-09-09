@@ -28,7 +28,7 @@ export const TopBar = () => {
         <div className="flex items-center gap-1.5">
           <Tooltip>
             <TooltipTrigger>
-              <Link to="/visualizer" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
+              <Link to="/visualizer" aria-label="Switch to Visualizer" className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-secondary/70 hover:text-foreground transition-colors duration-150">
                 <TbTopologyStarRing3 className="h-3.5 w-3.5" />
               </Link>
             </TooltipTrigger>
