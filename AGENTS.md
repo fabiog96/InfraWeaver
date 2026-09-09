@@ -20,9 +20,10 @@ of unrelated work.
 - **`npm run build` is the honest check.** It runs `tsc -b && vite build` (~5s).
 - Never use `tsc --noEmit`: the root `tsconfig.json` holds only project
   references with `files: []`, so `--noEmit` typechecks nothing and exits 0.
-- **`npm run lint` is red on `main`** — three pre-existing errors, tracked in
-  #19. Do not fix them from an unrelated branch: an unrelated PR must not touch
-  `TextNodeForm.tsx`, `badge.tsx` or `button.tsx` for lint reasons.
+- **`npm run lint` is green on `main`** since #19 cleared the three pre-existing
+  errors. Keep it that way: a PR that leaves lint red is not done.
+- **`npm run typecheck`** runs `tsc -b` on its own. It is incremental, so right
+  after a build it can short-circuit — `npm run build` remains the honest check.
 - **There is no test runner yet** (#7). Until there is, `npm run build` plus the
   issue's own acceptance criteria are the entire gate — so keep the diff small
   enough that a reviewer can verify it by reading it.
