@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+import { readToken, removeToken, writeToken } from '../github/token-storage';
 import type { BranchInfo, SyncStatus, SyncProgress } from '../github/types';
 
 interface GitHubState {
@@ -24,11 +25,10 @@ interface GitHubState {
   clearToken: () => void;
 }
 
-const STORAGE_KEY_TOKEN = 'viz:github:token';
 const STORAGE_KEY_REPO = 'viz:github:repo';
 
 export const useGitHubStore = create<GitHubState>((set) => ({
-  token: localStorage.getItem(STORAGE_KEY_TOKEN) ?? '',
+  token: readToken(),
   owner: (() => {
     const saved = localStorage.getItem(STORAGE_KEY_REPO);
     return saved ? saved.split('/')[0] : '';
@@ -45,7 +45,7 @@ export const useGitHubStore = create<GitHubState>((set) => ({
   lastSyncAt: null,
 
   setToken: (token) => {
-    localStorage.setItem(STORAGE_KEY_TOKEN, token);
+    writeToken(token);
     set({ token, syncError: null });
   },
 
@@ -71,7 +71,7 @@ export const useGitHubStore = create<GitHubState>((set) => ({
   setLastSyncAt: (lastSyncAt) => set({ lastSyncAt }),
 
   clearToken: () => {
-    localStorage.removeItem(STORAGE_KEY_TOKEN);
+    removeToken();
     set({ token: '', syncError: null });
   },
 }));
