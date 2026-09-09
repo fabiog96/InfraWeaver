@@ -6,7 +6,7 @@ import type {
   NodeValidationStatus,
 } from '../validators/diagram-validator';
 
-type StatusMap = Map<string, NodeValidationStatus>;
+type StatusMap = Map<string, Exclude<NodeValidationStatus, null>>;
 
 interface ValidationState {
   messages: ValidationMessage[];
