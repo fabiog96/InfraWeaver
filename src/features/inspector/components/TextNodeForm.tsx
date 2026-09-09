@@ -18,11 +18,6 @@ export const TextNodeForm = () =>{
         })),
     );
 
-    const node = nodes.find(n=>n.id === selectedNodeId);
-    if(!node || node.type !== 'text') return null;
-
-    const data = node.data as TextNodeData;
-
     const handleChange = useCallback(                   
       (field: keyof TextNodeData, value: unknown) => {
         if (!selectedNodeId) return;                                                                                                                                                                                                                 
@@ -30,6 +25,11 @@ export const TextNodeForm = () =>{
       },                                                                                                                                                                                                                                             
       [selectedNodeId, updateNodeData],                 
     );
+
+    const node = nodes.find(n=>n.id === selectedNodeId);
+    if(!node || node.type !== 'text') return null;
+
+    const data = node.data as TextNodeData;
 
     return(
          <div className="flex flex-col gap-3 p-3">

@@ -1,7 +1,9 @@
-export { Button, buttonVariants, type ButtonProps } from './button';
+export { Button, type ButtonProps } from './button';
+export { buttonVariants } from './button-variants';
 export { Input } from './input';
 export { Label } from './label';
-export { Badge, badgeVariants, type BadgeProps } from './badge';
+export { Badge, type BadgeProps } from './badge';
+export { badgeVariants } from './badge-variants';
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './accordion';
 export { ScrollArea, ScrollBar } from './scroll-area';
 export { Separator } from './separator';
