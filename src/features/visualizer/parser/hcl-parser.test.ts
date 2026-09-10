@@ -158,6 +158,17 @@ describe('parseFiles — a file that does not parse', () => {
     expect(result.errors[0]).toMatchObject({ level: 'parse_error', filePath: 'broken.tf' });
   });
 
+  it("reports the parser's error object as-is — known bug, see #46", async () => {
+    const result = await parseFiles([brokenFile]);
+
+    expect(result.errors[0]).toEqual({
+      level: 'parse_error',
+      filePath: 'broken.tf',
+      message: {},
+      suggestion: 'Check for unclosed brackets, missing quotes, or unsupported HCL syntax.',
+    });
+  });
+
   it('does not stop the other files from being parsed', async () => {
     const result = await parseFiles([brokenFile, microservicesFile, localsAndOutputsFile]);
 
