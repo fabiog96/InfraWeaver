@@ -28,14 +28,16 @@ describe('parseFiles — extracted resources', () => {
   it('flattens resource, data and module blocks of a microservices stack', async () => {
     const result = await parseFiles([microservicesFile]);
 
-    expect(result.stats).toMatchObject({
+    expect(result.stats).toEqual({
       totalFiles: 1,
       parsedFiles: 1,
       skippedFiles: 0,
+      totalResources: 8,
       totalErrors: 0,
     });
 
     const resources = result.files[0].resources;
+    expect(resources).toHaveLength(8);
 
     expect(resources.filter((r) => r.type === 'resource').map((r) => `${r.resourceType}.${r.name}`)).toEqual(
       expect.arrayContaining([
@@ -61,6 +63,7 @@ describe('parseFiles — extracted resources', () => {
 
   it('flattens locals, variable and output blocks', async () => {
     const resources = await parseSingle(localsAndOutputsFile);
+    expect(resources).toHaveLength(5);
 
     expect(resources.filter((r) => r.type === 'variable').map((r) => r.name)).toEqual(
       expect.arrayContaining(['env', 'report_downloader_topic_arn']),
@@ -121,13 +124,13 @@ describe('parseFiles — references between resources', () => {
     expect(findBlock(resources, 'resource', 'report_downloads_lifecycle').references).toEqual([]);
   });
 
-  it('does not report terraform builtins as references', async () => {
+  it('extracts the operands of a merge(), never the call itself', async () => {
     const resources = await parseSingle(microservicesFile);
     const table = findBlock(resources, 'resource', 'report_downloader');
 
-    expect(table.references).toContain('local.report_downloader_common_tags');
-    expect(table.references).not.toContain('merge');
-    expect(table.references).not.toContain('jsonencode');
+    expect(new Set(table.references)).toEqual(
+      new Set(['var.env', 'local.report_downloader_common_tags']),
+    );
   });
 
   it('collects references nested inside a locals block', async () => {
