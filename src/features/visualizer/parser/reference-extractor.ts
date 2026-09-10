@@ -1,11 +1,14 @@
-/**
- * Regex patterns used to identify Terraform/HCL references inside string values.
- * Pattern 0: interpolation syntax `${...}`
- * Pattern 1: bare references like `var.x`, `local.x`, `module.x.y`, `data.x.y`
- * Pattern 2: provider resource references like `aws_lambda_function.my_fn.arn`
- */
-const REFERENCE_PATTERNS = [
-  /\$\{([^}]+)\}/g,
+const INTERPOLATION_PATTERN = /\$\{([^}]+)\}/g;
+
+/** Reference syntaxes recognised inside an interpolation, where no `${` guard is needed. */
+const INTERPOLATED_REFERENCE_PATTERNS = [
+  /((?:var|local|module|data)\.[a-zA-Z_][a-zA-Z0-9_.]*)/g,
+  /((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_.]*)/g,
+  /(dependency\.[a-zA-Z_][a-zA-Z0-9_.]*)/g,
+];
+
+/** Reference syntaxes recognised outside an interpolation: `local.x`, `aws_s3_bucket.media.id`. */
+const BARE_REFERENCE_PATTERNS = [
   /(?<!\$\{)((?:var|local|module|data|each)\.[a-zA-Z_][a-zA-Z0-9_.[\]"]*)/g,
   /(?<!\$\{)((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)/g,
 ];
@@ -70,25 +73,9 @@ const normalizeReference = (raw: string): string => {
  * // → ['dependency.messaging.outputs.topic_arn']
  */
 const extractFromInterpolation = (expr: string): string[] => {
-  const refs: string[] = [];
-
-  const refRegex = /((?:var|local|module|data)\.[a-zA-Z_][a-zA-Z0-9_.]*)/g;
-  let match;
-  while ((match = refRegex.exec(expr)) !== null) {
-    refs.push(normalizeReference(match[1]));
-  }
-
-  const resourceRegex = /((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_.]*)/g;
-  while ((match = resourceRegex.exec(expr)) !== null) {
-    refs.push(normalizeReference(match[1]));
-  }
-
-  const depRegex = /(dependency\.[a-zA-Z_][a-zA-Z0-9_.]*)/g;
-  while ((match = depRegex.exec(expr)) !== null) {
-    refs.push(normalizeReference(match[1]));
-  }
-
-  return refs;
+  return INTERPOLATED_REFERENCE_PATTERNS.flatMap((pattern) =>
+    [...expr.matchAll(pattern)].map((match) => normalizeReference(match[1])),
+  );
 };
 
 /**
@@ -114,25 +101,23 @@ const extractFromInterpolation = (expr: string): string[] => {
 export const extractReferences = (value: unknown): string[] => {
   const refs = new Set<string>();
 
+  const collect = (ref: string): void => {
+    if (!isIgnored(ref) && !isFunction(ref)) {
+      refs.add(ref);
+    }
+  };
+
   const walk = (v: unknown): void => {
     if (typeof v === 'string') {
-      const interpolationRegex = /\$\{([^}]+)\}/g;
-      let match;
-      while ((match = interpolationRegex.exec(v)) !== null) {
+      for (const match of v.matchAll(INTERPOLATION_PATTERN)) {
         for (const ref of extractFromInterpolation(match[1])) {
-          if (!isIgnored(ref) && !isFunction(ref)) {
-            refs.add(ref);
-          }
+          collect(ref);
         }
       }
 
-      for (const pattern of REFERENCE_PATTERNS.slice(1)) {
-        const patternCopy = new RegExp(pattern.source, pattern.flags);
-        while ((match = patternCopy.exec(v)) !== null) {
-          const ref = normalizeReference(match[1]);
-          if (!isIgnored(ref) && !isFunction(ref)) {
-            refs.add(ref);
-          }
+      for (const pattern of BARE_REFERENCE_PATTERNS) {
+        for (const match of v.matchAll(pattern)) {
+          collect(normalizeReference(match[1]));
         }
       }
     } else if (Array.isArray(v)) {
