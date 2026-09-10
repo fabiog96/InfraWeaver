@@ -74,6 +74,8 @@ npm run dev
 
 Open `http://localhost:5173` and start designing.
 
+Run the test suite with `npm run test:run`.
+
 ---
 
 ## Workflow
