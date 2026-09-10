@@ -7,7 +7,7 @@
 const REFERENCE_PATTERNS = [
   /\$\{([^}]+)\}/g,
   /(?<!\$\{)((?:var|local|module|data|each)\.[a-zA-Z_][a-zA-Z0-9_.[\]"]*)/g,
-  /(?<!\$\{)((?:aws|google|azurerm)_[a-zA-Z_]+\.[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)/g,
+  /(?<!\$\{)((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)/g,
 ];
 
 /** Prefixes that represent internal Terraform context, not cross-resource dependencies. */
@@ -78,7 +78,7 @@ const extractFromInterpolation = (expr: string): string[] => {
     refs.push(normalizeReference(match[1]));
   }
 
-  const resourceRegex = /((?:aws|google|azurerm)_[a-zA-Z_]+\.[a-zA-Z_][a-zA-Z0-9_.]*)/g;
+  const resourceRegex = /((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_.]*)/g;
   while ((match = resourceRegex.exec(expr)) !== null) {
     refs.push(normalizeReference(match[1]));
   }

@@ -99,6 +99,7 @@ describe('parseFiles — references between resources', () => {
         'aws_dynamodb_table.report_downloader.arn',
         'aws_dynamodb_table.report_downloader.name',
         'aws_sqs_queue.report_download_jobs.url',
+        'aws_s3_bucket.report_downloads.bucket',
         'aws_cognito_user_pool.workspace.id',
         'data.aws_ecr_repository.report_downloader_service_repo.repository_url',
         'local.report_downloads_domain_name',
@@ -115,13 +116,12 @@ describe('parseFiles — references between resources', () => {
     );
   });
 
-  it('does not yet see aws_s3_bucket references — known bug, see #44', async () => {
+  it('sees a bare reference to a resource type containing a digit', async () => {
     const resources = await parseSingle(microservicesFile);
 
-    expect(findBlock(resources, 'module', 'report_downloader_service').references).not.toContain(
-      'aws_s3_bucket.report_downloads.bucket',
-    );
-    expect(findBlock(resources, 'resource', 'report_downloads_lifecycle').references).toEqual([]);
+    expect(findBlock(resources, 'resource', 'report_downloads_lifecycle').references).toEqual([
+      'aws_s3_bucket.report_downloads.id',
+    ]);
   });
 
   it('extracts the operands of a merge(), never the call itself', async () => {
