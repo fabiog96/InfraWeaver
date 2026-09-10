@@ -24,8 +24,9 @@ of unrelated work.
   errors. Keep it that way: a PR that leaves lint red is not done.
 - **`npm run typecheck`** runs `tsc -b` on its own. It is incremental, so right
   after a build it can short-circuit — `npm run build` remains the honest check.
-- **There is no test runner yet** (#7). Until there is, `npm run build` plus the
-  issue's own acceptance criteria are the entire gate — so keep the diff small
+- **`npm run test:run` runs the Vitest suite** (`npm test` watches it). Coverage
+  is still partial — the HCL parser only (#7) — so `npm run build` plus the
+  issue's own acceptance criteria remain part of the gate. Keep the diff small
   enough that a reviewer can verify it by reading it.
 
 ## Conventions
