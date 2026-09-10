@@ -1,13 +1,11 @@
 const INTERPOLATION_PATTERN = /\$\{([^}]+)\}/g;
 
-/** Reference syntaxes recognised inside an interpolation, where no `${` guard is needed. */
 const INTERPOLATED_REFERENCE_PATTERNS = [
   /((?:var|local|module|data)\.[a-zA-Z_][a-zA-Z0-9_.]*)/g,
   /((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_.]*)/g,
   /(dependency\.[a-zA-Z_][a-zA-Z0-9_.]*)/g,
 ];
 
-/** Reference syntaxes recognised outside an interpolation: `local.x`, `aws_s3_bucket.media.id`. */
 const BARE_REFERENCE_PATTERNS = [
   /(?<!\$\{)((?:var|local|module|data|each)\.[a-zA-Z_][a-zA-Z0-9_.[\]"]*)/g,
   /(?<!\$\{)((?:aws|google|azurerm)_[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)/g,
