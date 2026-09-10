@@ -19,6 +19,11 @@ describe('extractReferences — resource types containing a digit', () => {
     expect(extractReferences(reference)).toEqual([reference]);
   });
 
+  it('still refuses a type whose first character is a digit', () => {
+    expect(extractReferences('${aws_3d_thing.main.id}')).toEqual([]);
+    expect(extractReferences('aws_3d_thing.main.id')).toEqual([]);
+  });
+
   it('reads a digitless type just the same', () => {
     expect(extractReferences('${aws_dynamodb_table.jobs.arn}')).toEqual([
       'aws_dynamodb_table.jobs.arn',
