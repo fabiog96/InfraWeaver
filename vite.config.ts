@@ -1,4 +1,4 @@
-import { copyFileSync } from 'node:fs'
+import { copyFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
 
 import { defineConfig, type Plugin } from 'vite'
@@ -15,7 +15,10 @@ const spaFallback = (): Plugin => {
       outDir = path.resolve(config.root, config.build.outDir)
     },
     closeBundle() {
-      copyFileSync(path.join(outDir, 'index.html'), path.join(outDir, '404.html'))
+      const shell = path.join(outDir, 'index.html')
+      if (!existsSync(shell)) return
+
+      copyFileSync(shell, path.join(outDir, '404.html'))
     },
   }
 }
