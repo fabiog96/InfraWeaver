@@ -9,7 +9,6 @@ import type {
 type StatusMap = Map<string, Exclude<NodeValidationStatus, null>>;
 
 interface ValidationState {
-  messages: ValidationMessage[];
   nodeStatuses: StatusMap;
   edgeStatuses: StatusMap;
   setMessages: (messages: ValidationMessage[]) => void;
@@ -33,10 +32,9 @@ const buildStatusMaps = (messages: ValidationMessage[]) => {
 };
 
 export const useValidationStore = create<ValidationState>((set) => ({
-  messages: [],
   nodeStatuses: new Map(),
   edgeStatuses: new Map(),
-  setMessages: (messages) => set({ messages, ...buildStatusMaps(messages) }),
+  setMessages: (messages) => set(buildStatusMaps(messages)),
 }));
 
 export const useNodeValidation = (nodeId: string): NodeValidationStatus =>
