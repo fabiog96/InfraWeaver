@@ -1,6 +1,12 @@
 import { createBrowserRouter } from 'react-router';
 
-import { DesignerPage, VisualizerPage, DesignerGuidePage, GitHubTokenGuidePage } from '@/pages';
+import {
+  DesignerPage,
+  VisualizerPage,
+  DesignerGuidePage,
+  GitHubTokenGuidePage,
+  NotFoundPage,
+} from '@/pages';
 
 export const router = createBrowserRouter(
   [
@@ -23,6 +29,10 @@ export const router = createBrowserRouter(
     {
       path: '/guide/github-token',
       element: <GitHubTokenGuidePage />,
+    },
+    {
+      path: '*',
+      element: <NotFoundPage />,
     },
   ],
   { basename: '/InfraWeaver' },
