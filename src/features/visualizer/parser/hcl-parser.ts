@@ -7,32 +7,9 @@ import type {
 } from './types';
 import { extractReferences } from './reference-extractor';
 import { mapBlockLocations, findBlockLocation } from './line-mapper';
+import { toParseError } from './parse-error';
 
 type HclParsedObject = Record<string, unknown>;
-
-/**
- * Extracts a code snippet from file content around a specific line number.
- * Shows surrounding lines with a `>` marker on the target line.
- * Used to provide context in parse error messages.
- *
- * @example
- * // Given a file where line 3 has a syntax error:
- * getSnippet(content, 3)
- * // → "  2 |   bucket = \"my-bucket\"\n> 3 |   tags = {\n  4 |   # missing closing brace"
- */
-const getSnippet = (content: string, line: number, radius = 1): string => {
-  const lines = content.split('\n');
-  const start = Math.max(0, line - 1 - radius);
-  const end = Math.min(lines.length, line + radius);
-  return lines
-    .slice(start, end)
-    .map((l, i) => {
-      const lineNum = start + i + 1;
-      const marker = lineNum === line ? '>' : ' ';
-      return `${marker} ${lineNum} | ${l}`;
-    })
-    .join('\n');
-};
 
 /**
  * Converts the JSON output from hcl2-parser into a flat array of ParsedResource objects.
@@ -189,23 +166,10 @@ const parseHclContent = async (
   const { parseToObject } = await import('hcl2-parser');
 
   const result = await parseToObject(content);
-  const [parsed, error] = result as [HclParsedObject | null, string | null];
+  const [parsed, error] = result as [HclParsedObject | null, unknown];
 
   if (error) {
-    const errorLine = extractErrorLine(error);
-    return {
-      resources: [],
-      errors: [
-        {
-          level: 'parse_error',
-          filePath,
-          line: errorLine,
-          message: error,
-          snippet: errorLine ? getSnippet(content, errorLine) : undefined,
-          suggestion: 'Check for unclosed brackets, missing quotes, or unsupported HCL syntax.',
-        },
-      ],
-    };
+    return { resources: [], errors: [toParseError(error, filePath, content)] };
   }
 
   if (!parsed) {
@@ -226,15 +190,6 @@ const parseHclContent = async (
   const resources = parseResources(parsed, filePath, content, locations);
 
   return { resources, errors: [] };
-};
-
-/**
- * Attempts to extract a line number from an HCL parser error message.
- * Looks for patterns like "on <file> line 42" or ":42:".
- */
-const extractErrorLine = (error: string): number | undefined => {
-  const lineMatch = /on\s+.*?line\s+(\d+)/i.exec(error) ?? /:(\d+)[:,]/i.exec(error);
-  return lineMatch ? parseInt(lineMatch[1], 10) : undefined;
 };
 
 export interface FileInput {
