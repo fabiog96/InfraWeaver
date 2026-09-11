@@ -8,6 +8,10 @@ const NODE_WIDTH = 200;
 const NODE_HEIGHT = 60;
 const GROUP_PADDING = 60;
 const GRAPH_MARGIN = 40;
+const FILE_GROUP_PALETTE = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+  '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+];
 
 const graphNode = (overrides: Partial<GraphNode> & Pick<GraphNode, 'id'>): GraphNode => ({
   type: 'resource',
@@ -288,6 +292,28 @@ describe('groupNodesByFile', () => {
     const nodes = laidOut({ 'resource.a': { x: 0, y: 0 }, 'resource.b': { x: 300, y: 100 } });
 
     expect(groupOf(nodes).data.label).toBe('report-downloader');
+  });
+
+  it('colors the group from the palette rather than falling back to grey', () => {
+    const nodes = laidOut({ 'resource.a': { x: 0, y: 0 }, 'resource.b': { x: 300, y: 100 } });
+
+    expect(FILE_GROUP_PALETTE).toContain(groupOf(nodes).data.color);
+  });
+
+  it('derives the group color from the file path, not from the first child', () => {
+    const { nodes } = computeLayout(
+      [
+        graphNode({ id: 'resource.a', filePath: 'a.tf' }),
+        graphNode({ id: 'resource.b', filePath: 'a.tf' }),
+        graphNode({ id: 'resource.c', filePath: 'b.tf' }),
+        graphNode({ id: 'resource.d', filePath: 'b.tf' }),
+      ],
+      [],
+    );
+    const withGroups = grouped(nodes);
+    const colorOf = (id: string): unknown => byId(withGroups, id).data.color;
+
+    expect(colorOf('group:a.tf')).not.toBe(colorOf('group:b.tf'));
   });
 
   it('re-expresses each child position relative to the group origin', () => {
