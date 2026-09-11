@@ -22,6 +22,7 @@ interface VisualizerState {
   setGraph: (nodes: GraphNode[], edges: GraphEdge[]) => void;
   setFlowElements: (nodes: Node[], edges: Edge[]) => void;
   setErrors: (errors: ParseError[]) => void;
+  setLayoutError: (error: ParseError | null) => void;
   setStats: (stats: ParseStats) => void;
   setSelectedNode: (id: string | null) => void;
   setProjectCatalog: (catalog: ProjectCatalog) => void;
@@ -57,6 +58,15 @@ export const useVisualizerStore = create<VisualizerState>((set, get) => ({
   setFlowElements: (flowNodes, flowEdges) => set({ flowNodes, flowEdges }),
 
   setErrors: (errors) => set({ errors }),
+
+  /** Publishes at most one layout failure at a time, leaving the parse and resolve errors alone. */
+  setLayoutError: (error) => set((state) => {
+    const otherErrors = state.errors.filter((e) => e.level !== 'layout_error');
+    const nothingChanges = !error && otherErrors.length === state.errors.length;
+    if (nothingChanges) return {};
+
+    return { errors: error ? [...otherErrors, error] : otherErrors };
+  }),
 
   setStats: (stats) => set({ stats }),
 
