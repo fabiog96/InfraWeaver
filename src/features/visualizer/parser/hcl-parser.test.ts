@@ -158,15 +158,25 @@ describe('parseFiles — a file that does not parse', () => {
     expect(result.errors[0]).toMatchObject({ level: 'parse_error', filePath: 'broken.tf' });
   });
 
-  it("reports the parser's error object as-is — known bug, see #46", async () => {
+  it('reports a renderable string message even though the parser gives none', async () => {
     const result = await parseFiles([brokenFile]);
 
     expect(result.errors[0]).toEqual({
       level: 'parse_error',
       filePath: 'broken.tf',
-      message: {},
+      message: 'The HCL parser rejected this file without reporting a reason.',
       suggestion: 'Check for unclosed brackets, missing quotes, or unsupported HCL syntax.',
     });
+  });
+
+  it('never reports a message React would refuse to render', async () => {
+    const result = await parseFiles([brokenFile, { path: 'garbage.tf', content: '@@@ !!! ###' }]);
+
+    expect(result.errors).toHaveLength(2);
+    for (const error of result.errors) {
+      expect(typeof error.message).toBe('string');
+      expect(error.message).not.toBe('[object Object]');
+    }
   });
 
   it('does not stop the other files from being parsed', async () => {

@@ -25,9 +25,9 @@ of unrelated work.
 - **`npm run typecheck`** runs `tsc -b` on its own. It is incremental, so right
   after a build it can short-circuit — `npm run build` remains the honest check.
 - **`npm run test:run` runs the Vitest suite** (`npm test` watches it). Coverage
-  is still partial — the HCL parser only (#7) — so `npm run build` plus the
-  issue's own acceptance criteria remain part of the gate. Keep the diff small
-  enough that a reviewer can verify it by reading it.
+  is still partial — the parsers and the error panel (#7) — so `npm run build`
+  plus the issue's own acceptance criteria remain part of the gate. Keep the
+  diff small enough that a reviewer can verify it by reading it.
 
 ## Conventions
 

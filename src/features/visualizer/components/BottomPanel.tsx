@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { TbChevronUp, TbChevronDown, TbAlertTriangle, TbFile } from 'react-icons/tb';
+import { TbChevronUp, TbChevronDown, TbAlertTriangle } from 'react-icons/tb';
 
 import { cn } from '@/shared/lib/utils';
 import { ScrollArea } from '@/shared/components/ui/scroll-area';
 import { Badge } from '@/shared/components/ui/badge';
 import { useVisualizerStore } from '../stores/visualizerStore';
+import { ParseErrorRow } from './ParseErrorRow';
+
+interface BottomPanelProps {
+  defaultExpanded?: boolean;
+}
 
 /**
  * Collapsible bottom panel showing parse/resolve errors.
  * Shows a summary bar when collapsed, full error list when expanded.
  */
-export const BottomPanel = () => {
+export const BottomPanel = ({ defaultExpanded = false }: BottomPanelProps) => {
   const errors = useVisualizerStore((s) => s.errors);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   if (errors.length === 0) return null;
 
@@ -67,27 +72,7 @@ export const BottomPanel = () => {
         <ScrollArea className="h-40">
           <div className="space-y-1 px-3 pb-2">
             {errors.map((error, i) => (
-              <div
-                key={`${error.filePath}-${error.line}-${i}`}
-                className="flex items-start gap-2 rounded-md bg-secondary/30 px-2 py-1.5"
-              >
-                <TbFile className="h-3 w-3 shrink-0 mt-0.5 text-muted-foreground" />
-                <div className="flex flex-col min-w-0">
-                  <span className="break-all text-[10px] font-mono text-muted-foreground">
-                    {error.filePath}
-                    {error.line ? `:${error.line}` : ''}
-                  </span>
-                  <span className="text-[10px] text-foreground">{error.message}</span>
-                  {error.snippet && (
-                    <pre className="mt-1 text-[9px] text-muted-foreground font-mono whitespace-pre-wrap">
-                      {error.snippet}
-                    </pre>
-                  )}
-                  {error.suggestion && (
-                    <span className="text-[9px] text-primary mt-0.5">{error.suggestion}</span>
-                  )}
-                </div>
-              </div>
+              <ParseErrorRow key={`${error.filePath}-${error.line}-${i}`} error={error} />
             ))}
           </div>
         </ScrollArea>

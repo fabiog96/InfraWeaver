@@ -30,3 +30,5 @@ docs/
 
 # Claude
 .claude/
+# ralph-gh orchestrator config — must stay untracked
+.ralph-gh*
