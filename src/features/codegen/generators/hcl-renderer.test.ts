@@ -205,4 +205,22 @@ describe('renderMainTf', () => {
     expect(tf).toContain('publish     = false');
     expect(tf).toContain('layers      = [\n  "arn:layer"\n]');
   });
+
+  it('serialises a map value instead of stringifying the object', () => {
+    const module = buildModule({
+      resourceBlocks: [
+        {
+          resourceType: 'aws_lambda_function',
+          resourceName: 'this',
+          attributes: [{ attribute: 'tags', fromInput: 'tags' }],
+        },
+      ],
+      inputs: [input({ name: 'tags', type: 'map' })],
+    });
+
+    const tf = renderMainTf(module, { tags: { team: 'infra' } });
+
+    expect(tf).not.toContain('[object Object]');
+    expect(tf).toContain('tags = {\n  "team": "infra"\n}');
+  });
 });
