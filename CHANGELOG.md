@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.1](https://github.com/fabiog96/InfraWeaver/compare/v1.0.0...v1.0.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* 🐛 read references to resource types containing a digit ([#47](https://github.com/fabiog96/InfraWeaver/issues/47)) ([1b9e39b](https://github.com/fabiog96/InfraWeaver/commit/1b9e39b2807b4f652650e3bf9ab6f0c8b5c41893))
+* 🐛 report a failing layout instead of swallowing it ([#58](https://github.com/fabiog96/InfraWeaver/issues/58)) ([d48efa6](https://github.com/fabiog96/InfraWeaver/commit/d48efa6052891ed991280f92b294aa324f34e0e5))
+* 🐛 serve the SPA shell as the GitHub Pages 404 fallback ([#41](https://github.com/fabiog96/InfraWeaver/issues/41)) ([0def5ab](https://github.com/fabiog96/InfraWeaver/commit/0def5ab84058e39ec2c86fb27d1efab42bc5312e))
+* 🐛 stop a .tf that does not parse from blanking the page ([#48](https://github.com/fabiog96/InfraWeaver/issues/48)) ([64ebe9d](https://github.com/fabiog96/InfraWeaver/commit/64ebe9db056fc4febefba1f89d39b086057ef7fc))
+
 ## 1.0.0 (2026-09-10)
 
 
