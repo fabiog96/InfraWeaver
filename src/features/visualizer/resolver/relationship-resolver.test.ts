@@ -180,10 +180,15 @@ describe('resolveRelationships — edge cases', () => {
     expect(toBucket).toHaveLength(1);
   });
 
-  it('never points an edge at a var or a local', async () => {
-    const { edges } = await resolve(edgeCasesFile);
+  it('leaves a block wired to nothing but a var and a local without an edge', async () => {
+    const files = await parse(edgeCasesFile);
+    expect(referencesOf(files, 'aws_s3_bucket.artifacts')).toEqual([
+      'var.env',
+      'local.notifier_common_tags',
+    ]);
 
-    expect(edges.filter((edge) => /^(var|local)\./.test(edge.target))).toEqual([]);
+    const { edges } = resolveRelationships(files);
+    expect(edges.filter((edge) => edge.source === 'resource.aws_s3_bucket.artifacts')).toEqual([]);
   });
 
   it('returns an empty graph for no files at all', () => {
