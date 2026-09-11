@@ -59,6 +59,28 @@ describe('computeLayout — saved positions', () => {
     );
   });
 
+  it('places a module where the user left it, the same as a resource', () => {
+    const module = graphNode({
+      id: 'module.campaign_proximity_service',
+      type: 'module',
+      moduleSource: 'api-gateway-lambda',
+    });
+
+    const dagreOnly = computeLayout([module], []);
+    const withSaved = computeLayout([module], [], {
+      'module.campaign_proximity_service': { x: 100, y: 200 },
+    });
+
+    expect(byId(withSaved.nodes, 'module.campaign_proximity_service').position).toEqual({
+      x: 100,
+      y: 200,
+    });
+    expect(byId(dagreOnly.nodes, 'module.campaign_proximity_service').position).not.toEqual({
+      x: 100,
+      y: 200,
+    });
+  });
+
   it('ignores a saved position that belongs to a node no longer in the graph', () => {
     const { nodes } = computeLayout([graphNode({ id: 'resource.a' })], [], {
       'resource.vanished': { x: 12, y: 34 },
@@ -105,7 +127,11 @@ describe('computeLayout — dagre placement', () => {
     ];
     const realEdge = graphEdge('resource.a', 'resource.b');
 
-    const withDangling = computeLayout(present, [realEdge, graphEdge('resource.a', 'resource.gone')]);
+    const withDangling = computeLayout(present, [
+      realEdge,
+      graphEdge('resource.a', 'resource.gone'),
+      graphEdge('resource.gone', 'resource.a'),
+    ]);
     const withoutDangling = computeLayout(present, [realEdge]);
 
     expect(withDangling.nodes.map((node) => node.position)).toEqual(
@@ -141,6 +167,26 @@ describe('computeLayout — element shape', () => {
     expect(byId(nodes, 'resource.a').data).toMatchObject({
       filePath: 'resources/010-network/vpc.tf',
       lineStart: 17,
+    });
+  });
+
+  it('carries the source location of a module into its flow data too', () => {
+    const { nodes } = computeLayout(
+      [
+        graphNode({
+          id: 'module.m',
+          type: 'module',
+          moduleSource: 'api-gateway-lambda',
+          filePath: 'resources/070-microservices/report-downloader.tf',
+          lineStart: 42,
+        }),
+      ],
+      [],
+    );
+
+    expect(byId(nodes, 'module.m').data).toMatchObject({
+      filePath: 'resources/070-microservices/report-downloader.tf',
+      lineStart: 42,
     });
   });
 
