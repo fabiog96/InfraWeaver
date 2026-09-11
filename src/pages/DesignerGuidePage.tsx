@@ -1,14 +1,13 @@
 import { Link } from 'react-router';
 import {
-  TbArrowLeft, TbMouse, TbKeyboard, TbClick,
+  TbMouse, TbKeyboard, TbClick,
   TbArrowsMove, TbTrash, TbCopy, TbClipboard,
   TbZoomIn, TbZoomOut, TbArrowBack,
   TbPlugConnected, TbBoxMultiple, TbDownload,
 } from 'react-icons/tb';
 
 import { useThemeSync } from '@/shared/hooks';
-import { ThemeToggle } from '@/shared/components/ThemeToggle';
-import { Logo } from '@/shared/icons/Logo';
+import { GuideHeader } from '@/shared/components';
 
 const Kbd = ({ children }: { children: React.ReactNode }) => (
   <kbd className="rounded border border-border bg-card px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
@@ -124,19 +123,7 @@ export const DesignerGuidePage = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col bg-background overflow-y-auto">
-      <div className="sticky top-0 z-10 flex h-10 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <Link to="/designer" className="text-muted-foreground hover:text-foreground transition-colors">
-            <TbArrowLeft className="h-4 w-4" />
-          </Link>
-          <div className="flex items-center gap-2">
-            <Logo size={16} className="text-ink" />
-            <span className="text-xs font-bold text-primary tracking-widest">INFRA</span>
-            <span className="text-xs text-muted-foreground tracking-wider">GUIDE</span>
-          </div>
-        </div>
-        <ThemeToggle />
-      </div>
+      <GuideHeader backTo="/designer" label="GUIDE" />
 
       <div className="mx-auto w-full max-w-2xl px-6 py-12">
         <h1 className="text-lg font-bold text-foreground tracking-wide">

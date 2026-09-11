@@ -1,9 +1,7 @@
 import { Link, useLocation } from 'react-router';
-import { TbArrowLeft } from 'react-icons/tb';
 
 import { useThemeSync } from '@/shared/hooks';
-import { ThemeToggle } from '@/shared/components/ThemeToggle';
-import { Logo } from '@/shared/icons/Logo';
+import { GuideHeader } from '@/shared/components';
 
 export const NotFoundPage = () => {
   useThemeSync();
@@ -11,19 +9,7 @@ export const NotFoundPage = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col bg-background overflow-y-auto">
-      <div className="sticky top-0 z-10 flex h-10 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
-            <TbArrowLeft className="h-4 w-4" />
-          </Link>
-          <div className="flex items-center gap-2">
-            <Logo size={16} className="text-ink" />
-            <span className="text-xs font-bold text-primary tracking-widest">INFRA</span>
-            <span className="text-xs text-muted-foreground tracking-wider">NOT FOUND</span>
-          </div>
-        </div>
-        <ThemeToggle />
-      </div>
+      <GuideHeader backTo="/" label="NOT FOUND" />
 
       <div className="mx-auto w-full max-w-2xl px-6 py-24">
         <span className="text-[10px] font-semibold tracking-widest text-muted-foreground">404</span>
