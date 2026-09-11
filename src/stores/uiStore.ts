@@ -1,18 +1,18 @@
 import { create } from 'zustand';
 
-import type { ExportFormat } from '@/shared/types';
+import type { ExportFormat, Theme } from '@/shared/types';
 
 interface UIState {
   leftSidebarOpen: boolean;
   rightSidebarOpen: boolean;
   exportFormat: ExportFormat;
-  theme: 'light' | 'dark';
+  theme: Theme;
   codePanelOpen: boolean;
   codePanelHeight: number;
   toggleLeftSidebar: () => void;
   toggleRightSidebar: () => void;
   setExportFormat: (format: ExportFormat) => void;
-  setTheme: (theme: 'light' | 'dark') => void;
+  setTheme: (theme: Theme) => void;
   toggleCodePanel: () => void;
   setCodePanelHeight: (height: number) => void;
 }

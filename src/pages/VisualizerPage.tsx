@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { TbPencilBolt, TbTopologyStarRing3, TbSettings, TbAlertTriangle } from 'react-icons/tb';
 import { ReactFlowProvider } from '@xyflow/react';
 
-import { useUIStore } from '@/stores';
+import { useThemeSync } from '@/shared/hooks';
 import { ThemeToggle } from '@/shared/components/ThemeToggle';
 import { Logo } from '@/shared/icons/Logo';
 import {
@@ -25,7 +25,7 @@ import { useGitHubStore } from '@/features/visualizer/stores/githubStore';
 import { useProjectVisualization } from '@/features/visualizer/hooks/useProjectVisualization';
 
 const VisualizerLayout = () => {
-  const theme = useUIStore((s) => s.theme);
+  useThemeSync();
   const stats = useVisualizerStore((s) => s.stats);
   const errors = useVisualizerStore((s) => s.errors);
   const projectCatalog = useVisualizerStore((s) => s.projectCatalog);
@@ -34,15 +34,6 @@ const VisualizerLayout = () => {
   const [settingsOpen, setSettingsOpen] = useState(!token);
 
   useProjectVisualization();
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-background">

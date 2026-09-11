@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router';
-import { TbArrowLeft, TbExternalLink, TbCopy, TbCheck } from 'react-icons/tb';
 import { useState, useCallback } from 'react';
+import { Link } from 'react-router';
+import { TbExternalLink, TbCopy, TbCheck } from 'react-icons/tb';
 
-import { useUIStore } from '@/stores';
-import { ThemeToggle } from '@/shared/components/ThemeToggle';
-import { Logo } from '@/shared/icons/Logo';
+import { useThemeSync } from '@/shared/hooks';
+import { GuideHeader } from '@/shared/components';
 
 const Kbd = ({ children }: { children: React.ReactNode }) => (
   <kbd className="rounded border border-border bg-card px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
@@ -76,29 +74,11 @@ const STEPS = [
 ];
 
 export const GitHubTokenGuidePage = () => {
-  const theme = useUIStore((s) => s.theme);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+  useThemeSync();
 
   return (
     <div className="flex h-screen w-screen flex-col bg-background overflow-y-auto">
-      {/* TOP BAR */}
-      <div className="sticky top-0 z-10 flex h-10 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <Link to="/visualizer" className="text-muted-foreground hover:text-foreground transition-colors">
-            <TbArrowLeft className="h-4 w-4" />
-          </Link>
-          <div className="flex items-center gap-2">
-            <Logo size={16} className="text-ink" />
-            <span className="text-xs font-bold text-primary tracking-widest">INFRA</span>
-            <span className="text-xs text-muted-foreground tracking-wider">GUIDE</span>
-          </div>
-        </div>
-        <ThemeToggle />
-      </div>
+      <GuideHeader backTo="/visualizer" label="GUIDE" />
 
       {/* CONTENT */}
       <div className="mx-auto w-full max-w-2xl px-6 py-12">
