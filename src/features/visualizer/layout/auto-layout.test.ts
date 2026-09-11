@@ -65,6 +65,7 @@ describe('computeLayout — saved positions', () => {
     });
 
     expect(nodes.map((node) => node.id)).toEqual(['resource.a']);
+    expect(byId(nodes, 'resource.a').position).toEqual({ x: GRAPH_MARGIN, y: GRAPH_MARGIN });
   });
 });
 
@@ -187,6 +188,18 @@ describe('groupNodesByFile', () => {
     });
   });
 
+  it('offsets the group by the minimum child position, not by the canvas origin', () => {
+    const nodes = laidOut({ 'resource.a': { x: 120, y: 80 }, 'resource.b': { x: 420, y: 180 } });
+
+    const group = groupOf(nodes);
+
+    expect(group.position).toEqual({ x: 120 - GROUP_PADDING, y: 80 - GROUP_PADDING });
+    expect(group.style).toEqual({
+      width: 300 + NODE_WIDTH + GROUP_PADDING * 2,
+      height: 100 + NODE_HEIGHT + GROUP_PADDING * 2,
+    });
+  });
+
   it('labels the group with the file name without its extension', () => {
     const nodes = laidOut({ 'resource.a': { x: 0, y: 0 }, 'resource.b': { x: 300, y: 100 } });
 
@@ -252,13 +265,13 @@ describe('groupNodesByFile', () => {
   it('does not group a file that holds a single node', () => {
     const nodes = laidOut({ 'resource.alone': { x: 0, y: 0 } });
 
-    expect(grouped(nodes)).toBe(nodes);
+    expect(grouped(nodes)).toEqual(nodes);
   });
 
   it('does not group a file left with a single node once its ghosts are excluded', () => {
     const nodes = laidOut({ 'resource.a': { x: 0, y: 0 }, 'resource.ghost': { x: 300, y: 100 } });
 
-    expect(grouped(nodes, ['resource.ghost'])).toBe(nodes);
+    expect(grouped(nodes, ['resource.ghost'])).toEqual(nodes);
   });
 
   it('gives each file its own group', () => {
@@ -272,10 +285,28 @@ describe('groupNodesByFile', () => {
       [],
     );
 
-    const groups = grouped(nodes)
-      .filter((node) => node.type === 'vizGroup')
-      .map((node) => node.id);
+    const withGroups = grouped(nodes);
+    const groups = withGroups.filter((node) => node.type === 'vizGroup').map((node) => node.id);
 
     expect(new Set(groups)).toEqual(new Set(['group:a.tf', 'group:b.tf']));
+  });
+
+  it('adopts each node into the group of its own file', () => {
+    const { nodes } = computeLayout(
+      [
+        graphNode({ id: 'resource.a', filePath: 'a.tf' }),
+        graphNode({ id: 'resource.b', filePath: 'a.tf' }),
+        graphNode({ id: 'resource.c', filePath: 'b.tf' }),
+        graphNode({ id: 'resource.d', filePath: 'b.tf' }),
+      ],
+      [],
+    );
+
+    const withGroups = grouped(nodes);
+
+    expect(byId(withGroups, 'resource.a').parentId).toBe('group:a.tf');
+    expect(byId(withGroups, 'resource.b').parentId).toBe('group:a.tf');
+    expect(byId(withGroups, 'resource.c').parentId).toBe('group:b.tf');
+    expect(byId(withGroups, 'resource.d').parentId).toBe('group:b.tf');
   });
 });
