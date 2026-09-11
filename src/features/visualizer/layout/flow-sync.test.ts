@@ -125,7 +125,7 @@ describe('syncFlowElements', () => {
     expect(errorsInStore()).toEqual([parseError]);
   });
 
-  it('does not churn the error list when there is nothing to clear', () => {
+  it('leaves the parse errors alone when the layout succeeds', () => {
     useVisualizerStore.setState({ errors: [parseError] });
 
     syncFlowElements(input(), publish());

@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 
+import { toLayoutError } from '../layout/layout-error';
 import type { ParseError } from '../parser/types';
 import { BottomPanel } from './BottomPanel';
 
@@ -34,6 +35,14 @@ describe('BottomPanel', () => {
 
   it('renders nothing when there is no error', () => {
     expect(render([])).toBe('');
+  });
+
+  it('renders a layout failure alongside the parse errors', () => {
+    const markup = render([parseError, toLayoutError(new Error('dagre ran out of ranks'))]);
+
+    expect(markup).toContain('2 errors');
+    expect(markup).toContain('dagre ran out of ranks');
+    expect(markup).toContain('rejected this file without reporting a reason');
   });
 
   it('survives a parse error whose message is not a string', () => {

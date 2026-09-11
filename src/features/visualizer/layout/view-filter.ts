@@ -125,13 +125,7 @@ const projectView = (selection: ViewSelection, projectName: string): FilteredVie
   return { visibleNodes: [...primaryNodes, ...ghostNodes], visibleEdges, ghostNodeIds };
 };
 
-/**
- * Narrows the whole graph down to what the current selection should show.
- *
- * A module selection shows that module's internals; no project selection shows every
- * node except module internals; a project selection shows the project's resources plus
- * ghost nodes for the neighbours it talks to outside the project.
- */
+/** Narrows the whole graph down to what the current selection should show. */
 export const filterForView = (selection: ViewSelection): FilteredView => {
   if (selection.selectedModule) return moduleInternalsView(selection, selection.selectedModule);
   if (!selection.selectedProject) return wholeGraphView(selection);

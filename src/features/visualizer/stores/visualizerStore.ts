@@ -62,8 +62,6 @@ export const useVisualizerStore = create<VisualizerState>((set, get) => ({
   /** Publishes at most one layout failure at a time, leaving the parse and resolve errors alone. */
   setLayoutError: (error) => set((state) => {
     const otherErrors = state.errors.filter((e) => e.level !== 'layout_error');
-    const nothingChanges = !error && otherErrors.length === state.errors.length;
-    if (nothingChanges) return {};
 
     return { errors: error ? [...otherErrors, error] : otherErrors };
   }),
