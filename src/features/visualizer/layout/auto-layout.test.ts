@@ -87,14 +87,30 @@ describe('computeLayout — dagre placement', () => {
     expect(byId(nodes, 'resource.only').position).toEqual({ x: GRAPH_MARGIN, y: GRAPH_MARGIN });
   });
 
-  it('survives an edge that points at a node outside the graph', () => {
+  it('keeps an edge that points outside the graph without inventing a node for it', () => {
     const { nodes, edges } = computeLayout(
       [graphNode({ id: 'resource.a' })],
       [graphEdge('resource.a', 'resource.missing')],
     );
 
-    expect(nodes).toHaveLength(1);
+    expect(nodes.map((node) => node.id)).toEqual(['resource.a']);
     expect(edges.map((edge) => edge.id)).toEqual(['resource.a->resource.missing']);
+  });
+
+  it('lays the graph out as if an edge pointing outside it were not there', () => {
+    const present = [
+      graphNode({ id: 'resource.a' }),
+      graphNode({ id: 'resource.b' }),
+      graphNode({ id: 'resource.c' }),
+    ];
+    const realEdge = graphEdge('resource.a', 'resource.b');
+
+    const withDangling = computeLayout(present, [realEdge, graphEdge('resource.a', 'resource.gone')]);
+    const withoutDangling = computeLayout(present, [realEdge]);
+
+    expect(withDangling.nodes.map((node) => node.position)).toEqual(
+      withoutDangling.nodes.map((node) => node.position),
+    );
   });
 });
 
@@ -198,6 +214,15 @@ describe('groupNodesByFile', () => {
       width: 300 + NODE_WIDTH + GROUP_PADDING * 2,
       height: 100 + NODE_HEIGHT + GROUP_PADDING * 2,
     });
+  });
+
+  it('subtracts the group origin from each child, not a bare padding', () => {
+    const nodes = laidOut({ 'resource.a': { x: 120, y: 80 }, 'resource.b': { x: 420, y: 180 } });
+
+    const withGroups = grouped(nodes);
+
+    expect(byId(withGroups, 'resource.a').position).toEqual({ x: 60, y: 60 });
+    expect(byId(withGroups, 'resource.b').position).toEqual({ x: 360, y: 160 });
   });
 
   it('labels the group with the file name without its extension', () => {

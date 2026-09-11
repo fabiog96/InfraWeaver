@@ -55,6 +55,12 @@ describe('savePositions / loadPositions', () => {
     expect(loadPositions('acme/infra', 'main')).toEqual(positions);
   });
 
+  it('namespaces the entry under the viz:positions prefix', () => {
+    savePositions('acme/infra', 'main', { 'resource.a': { x: 1, y: 2 } });
+
+    expect([...storage.keys()]).toEqual(['viz:positions:acme/infra:main']);
+  });
+
   it('returns an empty object when nothing was ever saved', () => {
     expect(loadPositions('acme/infra', 'main')).toEqual({});
   });
