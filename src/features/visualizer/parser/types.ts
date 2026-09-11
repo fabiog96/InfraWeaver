@@ -18,7 +18,7 @@ export interface ParsedFile {
   resources: ParsedResource[];
 }
 
-export type ParseErrorLevel = 'file_error' | 'parse_error' | 'resolve_error';
+export type ParseErrorLevel = 'file_error' | 'parse_error' | 'resolve_error' | 'layout_error';
 
 export interface ParseError {
   level: ParseErrorLevel;
