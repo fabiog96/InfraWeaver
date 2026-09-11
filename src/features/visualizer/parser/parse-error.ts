@@ -6,8 +6,8 @@ const SYNTAX_SUGGESTION = 'Check for unclosed brackets, missing quotes, or unsup
 /** Matches the line reference in a Terraform-style diagnostic: `on main.tf line 42, in resource`. */
 const TERRAFORM_LINE_REGEX = /on\s+.*?line\s+(\d+)/i;
 
-/** Matches the line reference in a compiler-style diagnostic: `main.tf:42:11: unexpected token`. */
-const COMPILER_LINE_REGEX = /[A-Za-z]:(\d+)[:,]/;
+/** Matches the line reference in a compiler-style diagnostic: `main.tf:42:11:` or a bare `:42,`. */
+const COMPILER_LINE_REGEX = /(?:^|[^0-9]):(\d+)[:,]/;
 
 /** Number of lines kept on each side of the offending line in a snippet. */
 const SNIPPET_RADIUS = 1;
@@ -25,7 +25,9 @@ const serialise = (error: object): string | undefined => {
 /** Renders whatever a parser failure carried as a non-empty, human-readable string. */
 const toMessage = (error: unknown): string => {
   if (typeof error === 'string') return error.trim() || NO_REASON_GIVEN;
-  if (error instanceof Error) return error.message.trim() || NO_REASON_GIVEN;
+  if (error instanceof Error && typeof error.message === 'string') {
+    return error.message.trim() || NO_REASON_GIVEN;
+  }
   if (error === null || typeof error !== 'object') return NO_REASON_GIVEN;
 
   return serialise(error) ?? NO_REASON_GIVEN;

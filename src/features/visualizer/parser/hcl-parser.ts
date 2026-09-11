@@ -157,7 +157,8 @@ const parseResources = (
 /**
  * Parses a single HCL file content string using hcl2-parser (WASM).
  * Returns extracted resources and any parse errors encountered.
- * On parser failure, returns a descriptive error with line number and code snippet.
+ * On parser failure, returns a renderable error, with a line number and a code snippet
+ * when the failure names one.
  */
 const parseHclContent = async (
   content: string,

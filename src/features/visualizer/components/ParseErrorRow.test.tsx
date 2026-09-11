@@ -28,6 +28,13 @@ describe('ParseErrorRow', () => {
     expect(() => render(hostile)).not.toThrow();
   });
 
+  it('renders a line that is not a number as no line at all', () => {
+    const hostile = { ...parseError, line: Symbol('nope') } as unknown as ParseError;
+
+    expect(() => renderToStaticMarkup(<ParseErrorRow error={hostile} />)).not.toThrow();
+    expect(renderToStaticMarkup(<ParseErrorRow error={hostile} />)).toContain('broken.tf');
+  });
+
   it('renders a non-string snippet and suggestion as text instead of throwing', () => {
     const hostile = { ...parseError, snippet: {}, suggestion: [] } as unknown as ParseError;
 

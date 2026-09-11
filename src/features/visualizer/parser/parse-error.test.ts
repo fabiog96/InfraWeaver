@@ -47,6 +47,14 @@ describe('toParseError — normalising whatever the parser throws at us', () => 
     expect(typeof toParseError(circular, 'broken.tf', content).message).toBe('string');
   });
 
+  it('survives an Error whose message is not a string', () => {
+    const hostile = new Error('boom');
+    Object.defineProperty(hostile, 'message', { value: {} });
+
+    expect(() => toParseError(hostile, 'broken.tf', content)).not.toThrow();
+    expect(typeof toParseError(hostile, 'broken.tf', content).message).toBe('string');
+  });
+
   it('falls back to our own text for an empty array', () => {
     expect(toParseError([], 'broken.tf', content).message).toMatch(/without reporting a reason/i);
   });
@@ -94,6 +102,15 @@ describe('toParseError — line and snippet', () => {
 
     expect(error.line).toBeUndefined();
     expect(error.snippet).toBeUndefined();
+  });
+
+  it('reads the line out of a diagnostic that carries no file name', () => {
+    expect(toParseError(':3,10-11: Unclosed configuration block', 'broken.tf', content).line).toBe(3);
+    expect(toParseError(':2: unexpected token', 'broken.tf', content).line).toBe(2);
+  });
+
+  it('reads the line, not the column, out of a file:line:column reference', () => {
+    expect(toParseError('modules/v2/main.tf:2:11: bad', 'broken.tf', content).line).toBe(2);
   });
 
   it('does not read a line number out of a clock time', () => {

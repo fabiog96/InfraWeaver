@@ -31,7 +31,7 @@ export const ParseErrorRow = ({ error }: ParseErrorRowProps) => {
       <div className="flex flex-col min-w-0">
         <span className="break-all text-[10px] font-mono text-muted-foreground">
           {filePath}
-          {error.line ? `:${error.line}` : ''}
+          {typeof error.line === 'number' && error.line > 0 ? `:${error.line}` : ''}
         </span>
         <span className="text-[10px] text-foreground">{message}</span>
         {snippet && (
