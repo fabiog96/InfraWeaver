@@ -59,3 +59,4 @@ export interface ServiceDefinition {
 }
 
 export type ExportFormat = 'png' | 'jpg' | 'json';
+export type Theme = 'light' | 'dark';

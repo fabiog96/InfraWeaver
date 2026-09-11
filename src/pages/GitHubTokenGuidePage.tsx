@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router';
 import { TbArrowLeft, TbExternalLink, TbCopy, TbCheck } from 'react-icons/tb';
-import { useState, useCallback } from 'react';
 
-import { useUIStore } from '@/stores';
+import { useThemeSync } from '@/shared/hooks';
 import { ThemeToggle } from '@/shared/components/ThemeToggle';
 import { Logo } from '@/shared/icons/Logo';
 
@@ -76,12 +75,7 @@ const STEPS = [
 ];
 
 export const GitHubTokenGuidePage = () => {
-  const theme = useUIStore((s) => s.theme);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+  useThemeSync();
 
   return (
     <div className="flex h-screen w-screen flex-col bg-background overflow-y-auto">

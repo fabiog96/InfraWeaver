@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 
 import { TopBar, Canvas } from '@/features/editor/components';
@@ -6,20 +5,11 @@ import { LibrarySidebar } from '@/features/library/components';
 import { PropertyPanel } from '@/features/inspector/components';
 import { CodePanel } from '@/features/codegen/components';
 import { useCanvasActions } from '@/features/editor/hooks';
-import { useUIStore } from '@/stores';
+import { useThemeSync } from '@/shared/hooks';
 
 const DesignerLayout = () => {
   useCanvasActions();
-  const theme = useUIStore((s) => s.theme);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
+  useThemeSync();
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-background">

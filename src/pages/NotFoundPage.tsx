@@ -1,19 +1,13 @@
-import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router';
 import { TbArrowLeft } from 'react-icons/tb';
 
-import { useUIStore } from '@/stores';
+import { useThemeSync } from '@/shared/hooks';
 import { ThemeToggle } from '@/shared/components/ThemeToggle';
 import { Logo } from '@/shared/icons/Logo';
 
 export const NotFoundPage = () => {
-  const theme = useUIStore((s) => s.theme);
+  useThemeSync();
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
 
   return (
     <div className="flex h-screen w-screen flex-col bg-background overflow-y-auto">
