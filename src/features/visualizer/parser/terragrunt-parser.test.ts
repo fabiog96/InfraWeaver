@@ -12,4 +12,10 @@ describe('parseTerragruntContent — a file that does not parse', () => {
     expect(result.errors[0]).toMatchObject({ level: 'parse_error', filePath: 'terragrunt.hcl' });
     expect(result.errors[0].message).not.toBe('[object Object]');
   });
+
+  it('keeps its own suggestion rather than the HCL one', async () => {
+    const result = await parseTerragruntContent('include {\n  path = find_in_parent(', 'terragrunt.hcl');
+
+    expect(result.errors[0].suggestion).toBe('Check for syntax errors in the Terragrunt configuration.');
+  });
 });

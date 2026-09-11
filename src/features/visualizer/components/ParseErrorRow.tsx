@@ -18,12 +18,7 @@ const toText = (value: unknown): string => {
   }
 };
 
-/**
- * One row of the error list: where the error is, what it says, and what to try.
- *
- * `ParseError` says what a parser should return, not what it does, so every field goes
- * through `toText` — #46 blanked the page by handing React a parser error object.
- */
+/** One row of the error list: where the error is, what it says, and what to try. */
 export const ParseErrorRow = ({ error }: ParseErrorRowProps) => {
   const filePath = toText(error.filePath);
   const message = toText(error.message);

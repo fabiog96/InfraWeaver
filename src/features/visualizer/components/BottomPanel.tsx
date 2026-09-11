@@ -7,13 +7,17 @@ import { Badge } from '@/shared/components/ui/badge';
 import { useVisualizerStore } from '../stores/visualizerStore';
 import { ParseErrorRow } from './ParseErrorRow';
 
+interface BottomPanelProps {
+  defaultExpanded?: boolean;
+}
+
 /**
  * Collapsible bottom panel showing parse/resolve errors.
  * Shows a summary bar when collapsed, full error list when expanded.
  */
-export const BottomPanel = () => {
+export const BottomPanel = ({ defaultExpanded = false }: BottomPanelProps) => {
   const errors = useVisualizerStore((s) => s.errors);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   if (errors.length === 0) return null;
 

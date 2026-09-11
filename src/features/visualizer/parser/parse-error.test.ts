@@ -47,6 +47,10 @@ describe('toParseError — normalising whatever the parser throws at us', () => 
     expect(typeof toParseError(circular, 'broken.tf', content).message).toBe('string');
   });
 
+  it('falls back to our own text for an empty array', () => {
+    expect(toParseError([], 'broken.tf', content).message).toMatch(/without reporting a reason/i);
+  });
+
   it('serialises an object that does carry information', () => {
     expect(toParseError({ detail: 'unclosed brace' }, 'broken.tf', content).message).toContain(
       'unclosed brace',
@@ -85,10 +89,20 @@ describe('toParseError — line and snippet', () => {
     expect(error.snippet).toBeUndefined();
   });
 
-  it('does not invent a snippet for a line that is past the end of the file', () => {
+  it('drops a line that is past the end of the file instead of pointing at it', () => {
     const error = toParseError('on broken.tf line 99, in resource block', 'broken.tf', content);
 
-    expect(error.line).toBe(99);
+    expect(error.line).toBeUndefined();
     expect(error.snippet).toBeUndefined();
+  });
+
+  it('does not read a line number out of a clock time', () => {
+    expect(toParseError('Parse failed at 10:30, please retry', 'broken.tf', content).line).toBeUndefined();
+  });
+
+  it('does not read a line number out of prose that merely contains a colon', () => {
+    for (const message of ['HTTP 500: internal error', 'expected 1 of: foo, bar']) {
+      expect(toParseError(message, 'broken.tf', content).line).toBeUndefined();
+    }
   });
 });

@@ -1,6 +1,8 @@
 import type { ParseError, TerragruntConfig, TerragruntDependency } from './types';
 import { toParseError } from './parse-error';
 
+const TERRAGRUNT_SUGGESTION = 'Check for syntax errors in the Terragrunt configuration.';
+
 type HclParsedObject = Record<string, unknown>;
 
 interface TerragruntParseResult {
@@ -95,7 +97,7 @@ export const parseTerragruntContent = async (
     const [obj, error] = result as [HclParsedObject | null, unknown];
 
     if (error || !obj) {
-      return { config: null, errors: [toParseError(error, filePath, content)] };
+      return { config: null, errors: [toParseError(error, filePath, content, TERRAGRUNT_SUGGESTION)] };
     }
 
     parsed = obj;

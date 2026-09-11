@@ -7,7 +7,7 @@ const SYNTAX_SUGGESTION = 'Check for unclosed brackets, missing quotes, or unsup
 const TERRAFORM_LINE_REGEX = /on\s+.*?line\s+(\d+)/i;
 
 /** Matches the line reference in a compiler-style diagnostic: `main.tf:42:11: unexpected token`. */
-const COMPILER_LINE_REGEX = /:(\d+)[:,]/;
+const COMPILER_LINE_REGEX = /[A-Za-z]:(\d+)[:,]/;
 
 /** Number of lines kept on each side of the offending line in a snippet. */
 const SNIPPET_RADIUS = 1;
@@ -16,7 +16,7 @@ const SNIPPET_RADIUS = 1;
 const serialise = (error: object): string | undefined => {
   try {
     const serialised = JSON.stringify(error);
-    return serialised && serialised !== '{}' ? serialised : undefined;
+    return serialised && serialised !== '{}' && serialised !== '[]' ? serialised : undefined;
   } catch {
     return undefined;
   }
@@ -61,6 +61,14 @@ const getSnippet = (content: string, offendingLine: number): string | undefined 
     .join('\n');
 };
 
+/** Points at the offending line, or nowhere at all when it cannot be quoted from the file. */
+const locate = (message: string, content: string): Pick<ParseError, 'line' | 'snippet'> => {
+  const line = extractLine(message);
+  const snippet = line ? getSnippet(content, line) : undefined;
+
+  return snippet ? { line, snippet } : {};
+};
+
 /**
  * Builds a ParseError out of whatever a parser failure produced — a string, an Error,
  * an object, or nothing at all. The message is always a string, so it is always safe to
@@ -74,16 +82,13 @@ const getSnippet = (content: string, offendingLine: number): string | undefined 
  * toParseError({}, 'broken.tf', content)
  * // → { level: 'parse_error', filePath: 'broken.tf', message: 'The HCL parser rejected this file …' }
  */
-export const toParseError = (error: unknown, filePath: string, content: string): ParseError => {
+export const toParseError = (
+  error: unknown,
+  filePath: string,
+  content: string,
+  suggestion = SYNTAX_SUGGESTION,
+): ParseError => {
   const message = toMessage(error);
-  const line = extractLine(message);
 
-  return {
-    level: 'parse_error',
-    filePath,
-    message,
-    line,
-    snippet: line ? getSnippet(content, line) : undefined,
-    suggestion: SYNTAX_SUGGESTION,
-  };
+  return { level: 'parse_error', filePath, message, ...locate(message, content), suggestion };
 };

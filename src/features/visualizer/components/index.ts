@@ -7,4 +7,3 @@ export { CompositeIcon } from './CompositeIcon';
 export { GitHubSettings } from './GitHubSettings';
 export { ProjectSidebar } from './ProjectSidebar';
 export { BottomPanel } from './BottomPanel';
-export { ParseErrorRow } from './ParseErrorRow';
