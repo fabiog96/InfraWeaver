@@ -1,0 +1,491 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`'cloudfront-s3' project generation > matches the generated project snapshot 1`] = `
+"===== infrastructure-live/terragrunt.hcl =====
+locals {
+  region      = "eu-west-1"
+  environment = "prod"
+  project     = "infraweaver"
+  subproject  = "platform"
+}
+
+remote_state {
+  backend = "s3"
+  generate = {
+    path      = "backend.tf"
+    if_exists = "overwrite"
+  }
+  config = {
+    bucket         = "infraweaver-tfstate"
+    key            = "\${path_relative_to_include()}/terraform.tfstate"
+    region         = local.region
+    encrypt        = true
+    dynamodb_table = "infraweaver-tflock"
+  }
+}
+
+generate "provider" {
+  path      = "provider.tf"
+  if_exists = "overwrite"
+  contents  = <<EOF
+provider "aws" {
+  region = "\${local.region}"
+  default_tags {
+    tags = {
+      terraform   = "true"
+      environment = "\${local.environment}"
+      project     = "\${local.project}"
+      subproject  = "\${local.subproject}"
+    }
+  }
+}
+EOF
+}
+
+===== infrastructure-live/_env/common.hcl =====
+locals {
+  common_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  region      = local.common_vars.locals.region
+  environment = local.common_vars.locals.environment
+  project     = local.common_vars.locals.project
+  subproject  = local.common_vars.locals.subproject
+}
+
+===== infrastructure-live/static-website/cdn/main.tf =====
+resource "aws_cloudfront_distribution" "this" {
+  enabled             = true
+  default_root_object = "index.html"
+  price_class         = "PriceClass_100"
+}
+
+===== infrastructure-live/static-website/cdn/variables.tf =====
+variable "enabled" {
+  description = "Distribution enabled"
+  type        = bool
+  default     = true
+}
+
+variable "default_root_object" {
+  description = "Default root object"
+  type        = string
+  default     = "index.html"
+}
+
+variable "price_class" {
+  description = "Price class"
+  type        = string
+  default     = "PriceClass_100"
+}
+
+variable "origin_domain_name" {
+  description = "Origin domain name (S3 bucket domain, ALB DNS, etc.)"
+  type        = string
+}
+
+===== infrastructure-live/static-website/cdn/outputs.tf =====
+output "distribution_id" {
+  description = "Distribution ID"
+  value       = aws_cloudfront_distribution.this.id
+}
+
+output "domain_name" {
+  description = "CloudFront domain name"
+  value       = aws_cloudfront_distribution.this.domain_name
+}
+
+output "arn" {
+  description = "Distribution ARN"
+  value       = aws_cloudfront_distribution.this.arn
+}
+
+===== infrastructure-live/static-website/cdn/terragrunt.hcl =====
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "env" {
+  path = "\${get_terragrunt_dir()}/../_env/common.hcl"
+}
+
+inputs = {
+  enabled             = true
+  default_root_object = "index.html"
+  price_class         = "PriceClass_100"
+}
+
+===== infrastructure-live/static-website/static-assets/main.tf =====
+resource "aws_s3_bucket" "this" {
+  bucket = "my-static-website"
+}
+
+resource "aws_s3_bucket_versioning" "this" {
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+===== infrastructure-live/static-website/static-assets/variables.tf =====
+variable "bucket_name" {
+  description = "S3 bucket name (globally unique)"
+  type        = string
+}
+
+variable "versioning" {
+  description = "Versioning status (Enabled or Suspended)"
+  type        = string
+  default     = "Enabled"
+}
+
+===== infrastructure-live/static-website/static-assets/outputs.tf =====
+output "bucket_arn" {
+  description = "Bucket ARN"
+  value       = aws_s3_bucket.this.arn
+}
+
+output "bucket_name" {
+  description = "Bucket name"
+  value       = aws_s3_bucket.this.id
+}
+
+output "bucket_domain_name" {
+  description = "Bucket domain name"
+  value       = aws_s3_bucket.this.bucket_regional_domain_name
+}
+
+===== infrastructure-live/static-website/static-assets/terragrunt.hcl =====
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "env" {
+  path = "\${get_terragrunt_dir()}/../_env/common.hcl"
+}
+
+dependency "cdn" {
+  config_path = "../cdn"
+}
+
+inputs = {
+  bucket_name = "my-static-website"
+  versioning  = "Enabled"
+}
+"
+`;
+
+exports[`'serverless-api' project generation > matches the generated project snapshot 1`] = `
+"===== infrastructure-live/terragrunt.hcl =====
+locals {
+  region      = "eu-west-1"
+  environment = "prod"
+  project     = "infraweaver"
+  subproject  = "platform"
+}
+
+remote_state {
+  backend = "s3"
+  generate = {
+    path      = "backend.tf"
+    if_exists = "overwrite"
+  }
+  config = {
+    bucket         = "infraweaver-tfstate"
+    key            = "\${path_relative_to_include()}/terraform.tfstate"
+    region         = local.region
+    encrypt        = true
+    dynamodb_table = "infraweaver-tflock"
+  }
+}
+
+generate "provider" {
+  path      = "provider.tf"
+  if_exists = "overwrite"
+  contents  = <<EOF
+provider "aws" {
+  region = "\${local.region}"
+  default_tags {
+    tags = {
+      terraform   = "true"
+      environment = "\${local.environment}"
+      project     = "\${local.project}"
+      subproject  = "\${local.subproject}"
+    }
+  }
+}
+EOF
+}
+
+===== infrastructure-live/_env/common.hcl =====
+locals {
+  common_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  region      = local.common_vars.locals.region
+  environment = local.common_vars.locals.environment
+  project     = local.common_vars.locals.project
+  subproject  = local.common_vars.locals.subproject
+}
+
+===== infrastructure-live/serverless-api/api-gateway/main.tf =====
+resource "aws_apigatewayv2_api" "this" {
+  name          = "my-api"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_stage" "default" {
+  name        = "$default"
+  auto_deploy = true
+}
+
+===== infrastructure-live/serverless-api/api-gateway/variables.tf =====
+variable "name" {
+  description = "API name"
+  type        = string
+}
+
+variable "protocol_type" {
+  description = "Protocol (HTTP or WEBSOCKET)"
+  type        = string
+  default     = "HTTP"
+}
+
+variable "description" {
+  description = "API description"
+  type        = string
+}
+
+variable "stage_name" {
+  description = "Stage name"
+  type        = string
+  default     = "$default"
+}
+
+variable "auto_deploy" {
+  description = "Auto deploy stage"
+  type        = bool
+  default     = true
+}
+
+===== infrastructure-live/serverless-api/api-gateway/outputs.tf =====
+output "api_id" {
+  description = "API Gateway ID"
+  value       = aws_apigatewayv2_api.this.id
+}
+
+output "api_endpoint" {
+  description = "API endpoint URL"
+  value       = aws_apigatewayv2_api.this.api_endpoint
+}
+
+output "execution_arn" {
+  description = "Execution ARN"
+  value       = aws_apigatewayv2_api.this.execution_arn
+}
+
+===== infrastructure-live/serverless-api/api-gateway/terragrunt.hcl =====
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "env" {
+  path = "\${get_terragrunt_dir()}/../_env/common.hcl"
+}
+
+inputs = {
+  name          = "my-api"
+  protocol_type = "HTTP"
+  stage_name    = "$default"
+  auto_deploy   = true
+}
+
+===== infrastructure-live/serverless-api/handler/main.tf =====
+resource "aws_lambda_function" "this" {
+  runtime       = "python3.12"
+  handler       = "main.lambda_handler"
+  memory_size   = 256
+  timeout       = 30
+}
+
+===== infrastructure-live/serverless-api/handler/variables.tf =====
+variable "function_name" {
+  description = "Lambda function name"
+  type        = string
+}
+
+variable "runtime" {
+  description = "Runtime environment"
+  type        = string
+  default     = "python3.12"
+}
+
+variable "handler" {
+  description = "Function handler"
+  type        = string
+  default     = "main.lambda_handler"
+}
+
+variable "memory_size" {
+  description = "Memory in MB"
+  type        = number
+  default     = 256
+}
+
+variable "timeout" {
+  description = "Timeout in seconds"
+  type        = number
+  default     = 30
+}
+
+variable "role_arn" {
+  description = "IAM role ARN"
+  type        = string
+}
+
+===== infrastructure-live/serverless-api/handler/outputs.tf =====
+output "function_arn" {
+  description = "Lambda function ARN"
+  value       = aws_lambda_function.this.arn
+}
+
+output "function_name" {
+  description = "Function name"
+  value       = aws_lambda_function.this.function_name
+}
+
+output "invoke_arn" {
+  description = "Invoke ARN"
+  value       = aws_lambda_function.this.invoke_arn
+}
+
+===== infrastructure-live/serverless-api/handler/terragrunt.hcl =====
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "env" {
+  path = "\${get_terragrunt_dir()}/../_env/common.hcl"
+}
+
+dependency "api_gateway" {
+  config_path = "../api-gateway"
+}
+
+dependency "lambda_role" {
+  config_path = "../lambda-role"
+}
+
+inputs = {
+  runtime       = "python3.12"
+  handler       = "main.lambda_handler"
+  memory_size   = 256
+  timeout       = 30
+}
+
+===== infrastructure-live/serverless-api/data-store/main.tf =====
+resource "aws_dynamodb_table" "this" {
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "pk"
+
+  attribute {
+    name = "pk"
+    type = "S"
+  }
+}
+
+===== infrastructure-live/serverless-api/data-store/variables.tf =====
+variable "table_name" {
+  description = "DynamoDB table name"
+  type        = string
+}
+
+variable "billing_mode" {
+  description = "Billing mode (PAY_PER_REQUEST or PROVISIONED)"
+  type        = string
+  default     = "PAY_PER_REQUEST"
+}
+
+variable "hash_key" {
+  description = "Partition key name"
+  type        = string
+  default     = "pk"
+}
+
+variable "hash_key_type" {
+  description = "Partition key type (S, N, B)"
+  type        = string
+  default     = "S"
+}
+
+variable "range_key" {
+  description = "Sort key name"
+  type        = string
+}
+
+===== infrastructure-live/serverless-api/data-store/outputs.tf =====
+output "table_arn" {
+  description = "Table ARN"
+  value       = aws_dynamodb_table.this.arn
+}
+
+output "table_name" {
+  description = "Table name"
+  value       = aws_dynamodb_table.this.name
+}
+
+===== infrastructure-live/serverless-api/data-store/terragrunt.hcl =====
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "env" {
+  path = "\${get_terragrunt_dir()}/../_env/common.hcl"
+}
+
+dependency "handler" {
+  config_path = "../handler"
+}
+
+inputs = {
+  billing_mode  = "PAY_PER_REQUEST"
+  hash_key      = "pk"
+  hash_key_type = "S"
+}
+
+===== infrastructure-live/serverless-api/lambda-role/main.tf =====
+resource "aws_iam_role" "this" {
+  name               = "lambda-execution-role"
+}
+
+===== infrastructure-live/serverless-api/lambda-role/variables.tf =====
+variable "role_name" {
+  description = "IAM role name"
+  type        = string
+}
+
+variable "assume_role_policy" {
+  description = "Assume role policy JSON"
+  type        = string
+}
+
+===== infrastructure-live/serverless-api/lambda-role/outputs.tf =====
+output "role_arn" {
+  description = "Role ARN"
+  value       = aws_iam_role.this.arn
+}
+
+output "role_name" {
+  description = "Role name"
+  value       = aws_iam_role.this.name
+}
+
+===== infrastructure-live/serverless-api/lambda-role/terragrunt.hcl =====
+include "root" {
+  path = find_in_parent_folders()
+}
+
+include "env" {
+  path = "\${get_terragrunt_dir()}/../_env/common.hcl"
+}
+
+inputs = {
+  role_name          = "lambda-execution-role"
+}
+"
+`;
