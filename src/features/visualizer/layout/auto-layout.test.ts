@@ -170,6 +170,19 @@ describe('computeLayout — element shape', () => {
     });
   });
 
+  it('describes a resource by its own type, not as a module', () => {
+    const { nodes } = computeLayout(
+      [graphNode({ id: 'resource.aws_s3_bucket.reports', serviceType: 'aws_s3_bucket' })],
+      [],
+    );
+
+    expect(byId(nodes, 'resource.aws_s3_bucket.reports').data).toMatchObject({
+      nodeType: 'resource',
+      serviceType: 'aws_s3_bucket',
+      isComposite: false,
+    });
+  });
+
   it('carries the source location of a module into its flow data too', () => {
     const { nodes } = computeLayout(
       [
