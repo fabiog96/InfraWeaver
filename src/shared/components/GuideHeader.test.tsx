@@ -24,7 +24,8 @@ describe('GuideHeader', () => {
   it('carries the theme toggle', () => {
     const markup = render(<GuideHeader backTo="/designer" label="GUIDE" />);
 
-    expect(markup).toContain('<button');
+    expect(markup.match(/<button/g)).toHaveLength(1);
+    expect(markup).toContain('h-6 w-6');
   });
 
   it('stays pinned to the top of the scrolling page', () => {
